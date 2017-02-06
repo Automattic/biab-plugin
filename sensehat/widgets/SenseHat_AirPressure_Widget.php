@@ -1,15 +1,15 @@
 <?php
 
-class SenseHat_Temperature_Widget extends WP_Widget {
+class SenseHat_AirPressure_Widget extends WP_Widget {
 
 	/**
 	 * Register widget with WordPress.
 	 */
 	function __construct() {
 		parent::__construct(
-			'sensehat_temperature_widget', // Base ID
-			esc_html__( 'Widget Title', 'text_domain' ), // Name
-			array( 'description' => esc_html__( 'SenseHat Temperature Widget', 'text_domain' ), ) // Args
+			'sensehat_airpressure_widget', // Base ID
+			esc_html__( 'SenseHat Air Pressure', 'text_domain' ), // Name
+			array( 'description' => esc_html__( 'SenseHat Air Pressure Widget', 'text_domain' ), ) // Args
 		);
 	}
 
@@ -27,13 +27,16 @@ class SenseHat_Temperature_Widget extends WP_Widget {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
 		}
 		global $wpdb;
-		$temperature = $wpdb->get_col( "
-			SELECT temperature
+		$air_pressure = $wpdb->get_col( "
+			SELECT ROUND(air_pressure)
 			FROM wp_sense_hat
 			ORDER BY id DESC LIMIT 1
 			;
 		" );
-		echo esc_html__( $temperature[0] ? $temperature[0] : 'there is no data yet', 'text_domain' );
+		echo '<div>';
+		echo '<span>💨</span>';
+		echo esc_html__( $air_pressure[0] ? $air_pressure[0] . ' mb': 'there is no data yet', 'text_domain' );
+		echo '</div>';
 		echo $args['after_widget'];
 	}
 
@@ -45,7 +48,7 @@ class SenseHat_Temperature_Widget extends WP_Widget {
 	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
-		$title = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'New title', 'text_domain' );
+		$title = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'Air Pressure', 'text_domain' );
 		?>
 		<p>
 		<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'Title:', 'text_domain' ); ?></label>
