@@ -12,8 +12,12 @@ class BiabCamera {
 	}
 
 	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-		add_action( 'admin_post_biab_take_photo', array( $this, 'take_photo' ) );
+		$enabled = biab_is_module_enabled( 'camera' );
+
+		if ( $enabled ) {
+			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+			add_action( 'admin_post_biab_take_photo', array( $this, 'take_photo' ) );
+		}
 	}
 
 	public function admin_menu() {

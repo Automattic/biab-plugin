@@ -12,7 +12,10 @@ class BiabSensehat {
 	}
 
 	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		$enabled = biab_is_module_enabled( 'sensehat' );
+		if ( $enabled ) {
+			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		}
 
 		register_uninstall_hook( BIAB_FILE, array( 'Redirection_Admin', 'plugin_uninstall' ) );
 	}
@@ -24,7 +27,7 @@ class BiabSensehat {
 	}
 
 	public function admin_menu() {
-		add_submenu_page( 'biab-plugin', __( 'Sensehat', 'bloginbox' ), __( 'Sensehat', 'bloginbox' ), 'manage_options', 'biab-plugin-sensehat', array( $this, 'show_page' ) );
+		add_submenu_page( 'biab-plugin', __( 'Sense Hat', 'bloginbox' ), __( 'Sense Hat', 'bloginbox' ), 'manage_options', 'biab-plugin-sensehat', array( $this, 'show_page' ) );
 	}
 
 	public static function plugin_activated() {
@@ -46,7 +49,9 @@ class BiabSensehat {
 	}
 
 	public function show_page() {
-		echo 'here';
+		?>
+		HERE
+		<?php
 	}
 
 	public function register_temperature_widget() {
