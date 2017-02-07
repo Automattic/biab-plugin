@@ -22,6 +22,14 @@ function biab_is_module_enabled( $module ) {
 	return false;
 }
 
+if ( !function_exists( 'pr' ) ) {
+	function pr( $things ) {
+		echo '<pre>';
+		print_r( $things );
+		echo '</pre>';
+	}
+}
+
 class BlogInBox {
 	private static $instance = null;
 
