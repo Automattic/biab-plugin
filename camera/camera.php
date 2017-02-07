@@ -1,5 +1,7 @@
 <?php
 
+// https://www.raspberrypi.org/documentation/raspbian/applications/camera.md
+
 include dirname( __FILE__ ).'/cron.php';
 include dirname( __FILE__ ).'/control.php';
 include dirname( __FILE__ ).'/settings.php';
@@ -50,7 +52,14 @@ class BiabCamera {
 			$settings = new CameraSettings();
 			$settings->save( $_POST );
 
-			wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin-camera&msg=saved&sub=settings' ) );
+			$redirect = add_query_arg( array( 'page' => 'biab-plugin-camera', 'sub' => 'settings' ), admin_url( 'admin.php' ) );
+			$control = new CameraControl();
+
+			if ( $control->save_settings( $settings->get() ) ) {
+				wp_safe_redirect( add_query_arg( 'msg', 'saved', $redirect ) );
+			} else {
+				wp_safe_redirect( add_query_arg( 'msg', 'savefail', $redirect ) );
+			}
 		}
 	}
 
@@ -64,6 +73,12 @@ class BiabCamera {
 		<?php if ( isset( $_GET['msg'] ) && $_GET['msg'] === 'saved' ) : ?>
 			<div class="notice notice-success is-dismissible">
 				<p><?php _e( 'Settings have been saved', 'bloginbox' ); ?></p>
+			</div>
+		<?php endif; ?>
+
+		<?php if ( isset( $_GET['msg'] ) && $_GET['msg'] === 'savefail' ) : ?>
+			<div class="notice notice-error">
+				<p><?php _e( 'Failed to update camera settings', 'bloginbox' ); ?></p>
 			</div>
 		<?php endif; ?>
 
