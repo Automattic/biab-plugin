@@ -12,6 +12,8 @@ Version: 0.1
 
 define( 'BIAB_FILE', __FILE__ );
 
+include dirname( BIAB_FILE ).'/control.php';
+
 function biab_is_module_enabled( $module ) {
 	$modules = get_option( 'biab_modules' );
 
@@ -67,6 +69,10 @@ class BlogInBox {
 			}
 
 			update_option( 'biab_modules', $enabled );
+
+			$control = new BiabControl();
+			$control->set_path( $_POST['path'] );
+
 			wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin&msg=saved' ) );
 		}
 	}
@@ -79,12 +85,13 @@ class BlogInBox {
 	}
 
 	public function show_page() {
+		$control = new BiabControl();
 		$modules = $this->get_available_modules();
 ?>
 <div class="wrap">
 	<?php if ( isset( $_GET['msg'] ) && $_GET['msg'] === 'saved' ) : ?>
 		<div class="notice notice-success is-dismissible">
-			<p><?php _e( 'Modules have been saved', 'bloginbox' ); ?></p>
+			<p><?php _e( 'Saved!', 'bloginbox' ); ?></p>
 		</div>
 	<?php endif; ?>
 
@@ -96,8 +103,9 @@ class BlogInBox {
 
 	<p><?php _e( 'Quickly and easily setup a WordPress blog on a Raspberry Pi, and provide a means to combine it with sensors.', 'bloginbox' ); ?></p>
 
-	<h3><?php _e( 'Modules', 'bloginbox' ); ?></h3>
+	<h3><?php _e( 'Configuration', 'bloginbox' ); ?></h3>
 	<form method="POST" action="<?php echo admin_url( 'admin-post.php' ); ?>">
+		<h4><?php _e( 'Modules', 'bloginbox' ); ?></h4>
 		<ul>
 			<?php foreach ( $modules as $module => $title ) : ?>
 				<li>
@@ -109,6 +117,9 @@ class BlogInBox {
 				</li>
 			<?php endforeach; ?>
 		</ul>
+
+		<h4><?php _e( 'Plugin Control', 'bloginbox' ); ?></h4>
+		<?php _e( 'Plugin control path', 'bloginbox' ); ?> <input type="text" name="path" value="<?php echo esc_attr( $control->get_path() ); ?>"/> <?php _e( "The full path to the plugin's control companion", 'bloginbox' ); ?>
 
  		<input type="hidden" name="action" value="biab_modules" />
 		<?php wp_nonce_field( 'biab_modules-save' ); ?>
