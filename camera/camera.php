@@ -171,10 +171,34 @@ class BiabCamera {
 				<td><input type="number" name="contrast" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'contrast' ) ); ?>"/> -100 to 100</td>
 			</tr>
 			<tr>
+				<th>ISO</th>
+				<td>
+					<select name="iso">
+						<?php foreach ( $settings->get_iso_values() as $iso ) : ?>
+							<option <?php selected( $settings->get_value( 'iso' ), $iso ); ?> value="<?php echo esc_attr( $iso ); ?>">
+								<?php echo esc_html( $iso ); ?>
+							</option>
+						<?php endforeach; ?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>White Balance</th>
+				<td>
+					<select name="awb">
+						<?php foreach ( $settings->get_awb_values() as $awb_key => $awb_name ) : ?>
+							<option <?php selected( $settings->get_value( 'awb' ), $awb_key ); ?> value="<?php echo esc_attr( $awb_key ); ?>">
+								<?php echo esc_html( $awb_name ); ?>
+							</option>
+						<?php endforeach; ?>
+					</select>
+				</td>
+			</tr>
+			<tr>
 				<th>Effect</th>
 				<td>
 					<select name="effect">
-						<?php foreach ( $settings->get_effects() as $name => $title ) : ?>
+						<?php foreach ( $settings->get_effect_values() as $name => $title ) : ?>
 							<option <?php selected( $settings->get_value( 'ifx' ), $name ); ?> value="<?php echo esc_attr( $name ); ?>">
 								<?php echo esc_html( $title ); ?>
 							</option>

@@ -8,7 +8,7 @@ class CameraSettings {
 		$this->settings = $this->get();
 	}
 
-	public function get_effects() {
+	public function get_effect_values() {
 		return array(
 			''              => __( 'None', 'bloginbox' ),
 			'negative'      => __( 'Negative', 'bloginbox' ),
@@ -33,6 +33,32 @@ class CameraSettings {
 		);
 	}
 
+	public function get_iso_values() {
+		return array(
+			100,
+			200,
+			320,
+			400,
+			500,
+			640,
+			800,
+		);
+	}
+
+	public function get_awb_values() {
+		return array(
+			'auto'         => __( 'Auto', 'bloginbox' ),
+			'sun'          => __( 'Sunny', 'bloginbox' ),
+			'cloud'        => __( 'Cloudy', 'bloginbox' ),
+			'shade'        => __( 'Shade', 'bloginbox' ),
+			'tungsten'     => __( 'Tungsten lighting', 'bloginbox' ),
+			'fluorescent'  => __( 'Fluorescent lighting', 'bloginbox' ),
+			'incandescent' => __( 'Incandescent lighting', 'bloginbox' ),
+			'flash'        => __( 'Flash', 'bloginbox' ),
+			'horizon'      => __( 'Horizon', 'bloginbox' ),
+		);
+	}
+
 	public function is_enabled( $name ) {
 		if ( isset( $this->settings[$name] ) && $this->settings[$name] ) {
 			return true;
@@ -49,38 +75,18 @@ class CameraSettings {
 		return false;
 	}
 
-	private function save_to_file( $values ) {
-		$file = get_home_path().'photo.config';
-		$flip = [];
-
-		if ( $values['vflip'] ) {
-			$flip[] = '-vf';
-		}
-
-		if ( $values['hflip'] ) {
-			$flip[] = '-hf';
-		}
-
-		$config = array(
-			'QUALITY='.$values['quality'],
-			'FLIP="'.implode( ' ', $flip ).'"',
-			'OTHER="--imxfx '.$values['ifx'].'"',
-			'',
-		);
-
-		file_put_contents( $file, implode( "\n", $config ) );
-	}
-
 	public function get() {
 		$defaults = array(
-			'quality' => 75,
-			'ifx'     => '',
+			'quality'    => 75,
+			'ifx'        => '',
 			'vflip'      => false,
 			'hflip'      => false,
-			'sharpness'  => '',
-			'contrast'   => '',
-			'brightness' => '',
-			'saturation' => '',
+			'sharpness'  => 0,
+			'contrast'   => 0,
+			'brightness' => 50,
+			'saturation' => 0,
+			'iso'        => 100,
+			'awb'        => 'auto',
 		);
 
 		$settings = get_option( self::OPTION_NAME );
@@ -102,6 +108,7 @@ class CameraSettings {
 		$contrast = intval( $values['contrast'], 10 );
 		$brightness = intval( $values['brightness'], 10 );
 		$saturation = intval( $values['saturation'], 10 );
+		$iso = intval( $values['iso'], 10 );
 
 		$sharpness = min( 100, max( -100, $sharpness ) );
 		$contrast = min( 100, max( -100, $contrast ) );
@@ -109,8 +116,17 @@ class CameraSettings {
 		$saturation = min( 100, max( -100, $saturation ) );
 
 		$ifx = '';
-		if ( isset( $this->get_effects()[ $values['effect'] ] ) ) {
+		if ( isset( $this->get_effect_values()[ $values['effect'] ] ) ) {
 			$ifx = $values['effect'];
+		}
+
+		$awb = 'auto';
+		if ( isset( $this->get_awb_values()[ $values['awb'] ] ) ) {
+			$awb = $values['awb'];
+		}
+
+		if ( !in_array( $iso, $this->get_iso_values() ) ) {
+			$iso = 100;
 		}
 
 		$settings = array(
@@ -118,6 +134,8 @@ class CameraSettings {
 			'vflip'      => $vflip,
 			'hflip'      => $hflip,
 			'ifx'        => $ifx,
+			'awb'        => $awb,
+			'iso'        => $iso,
 			'sharpness'  => $sharpness,
 			'contrast'   => $contrast,
 			'brightness' => $brightness,
@@ -125,7 +143,5 @@ class CameraSettings {
 		);
 
 		update_option( self::OPTION_NAME, $settings );
-
-		$this->save_to_file( $settings );
 	}
 }
