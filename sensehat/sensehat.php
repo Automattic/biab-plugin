@@ -14,6 +14,7 @@ class BiabSensehat {
 	public function __construct() {
 		$enabled = biab_is_module_enabled( 'sensehat' );
 		if ( $enabled ) {
+			add_action( 'widgets_init', array( 'BiabSensehat', 'widgets_init' ) );
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		}
 
@@ -74,6 +75,5 @@ class BiabSensehat {
 }
 
 add_action( 'init', array( 'BiabSensehat', 'init' ), 11 );
-add_action( 'widgets_init', array( 'BiabSensehat', 'widgets_init' ) );
 
 register_activation_hook( BIAB_FILE, array( 'BiabSensehat', 'plugin_activated' ) );
