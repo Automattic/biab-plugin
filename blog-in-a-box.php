@@ -58,11 +58,11 @@ class BlogInBox {
 	}
 
 	public function save_modules() {
-		if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'modules_save' ) ) {
+		if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'biab_modules-save' ) ) {
 			$modules = $this->get_available_modules();
 			$enabled = array();
 
-			foreach ( $modules AS $module => $title ) {
+			foreach ( array_keys( $modules ) as $module ) {
 				$enabled[$module] = isset( $_POST[$module] ) ? true : false;
 			}
 
@@ -80,15 +80,15 @@ class BlogInBox {
 
 	public function show_page() {
 		$modules = $this->get_available_modules();
-
- 		if ( isset( $_GET['msg'] ) && $_GET['msg'] === 'saved' ) : ?>
+?>
+<div class="wrap">
+	<?php if ( isset( $_GET['msg'] ) && $_GET['msg'] === 'saved' ) : ?>
 		<div class="notice notice-success is-dismissible">
 			<p><?php _e( 'Modules have been saved', 'bloginbox' ); ?></p>
 		</div>
-		<?php endif; ?>
+	<?php endif; ?>
 
-<div class="wrap">
-	<h2><?php _e( 'Blog In A Box', 'bloginbox' ); ?></h2>
+	<h1><?php _e( 'Blog In A Box', 'bloginbox' ); ?></h1>
 
 	<div class="biab-wapuu">
 		<img src="<?php echo plugins_url( 'wapi-512.png', BIAB_FILE ); ?>" width="128" />
@@ -96,7 +96,7 @@ class BlogInBox {
 
 	<p><?php _e( 'Quickly and easily setup a WordPress blog on a Raspberry Pi, and provide a means to combine it with sensors.', 'bloginbox' ); ?></p>
 
-	<h3><?php _e( 'Sensor Modules', 'bloginbox' ); ?></h3>
+	<h3><?php _e( 'Modules', 'bloginbox' ); ?></h3>
 	<form method="POST" action="<?php echo admin_url( 'admin-post.php' ); ?>">
 		<ul>
 			<?php foreach ( $modules as $module => $title ) : ?>
@@ -111,7 +111,7 @@ class BlogInBox {
 		</ul>
 
  		<input type="hidden" name="action" value="biab_modules" />
-		<?php wp_nonce_field( 'modules_save' ); ?>
+		<?php wp_nonce_field( 'biab_modules-save' ); ?>
 		<?php submit_button(); ?>
 	</form>
 </div>
