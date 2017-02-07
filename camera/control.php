@@ -7,6 +7,16 @@ class CameraControl extends BiabControl {
 
 	}
 
+	public function set_schedule( $interval ) {
+		$result = $this->request( self::DEVICE, 'schedule', intval( $interval, 10 ) );
+
+		if ( $result['retval'] === 0 ) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function save_settings( $settings ) {
 		$cmd = array(
 			'-q '.$settings['quality'],

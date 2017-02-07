@@ -26,8 +26,6 @@ class BiabCamera {
 			add_action( 'admin_post_biab_camera_schedule', array( $this, 'set_schedule' ) );
 			add_action( 'admin_post_biab_camera_settings', array( $this, 'save_settings' ) );
 			add_action( 'blog-in-a-box_page_biab-plugin-camera', array( $this, 'wp_head' ) );
-
-			$this->cron = new CameraCron();
 		}
 	}
 
@@ -41,9 +39,15 @@ class BiabCamera {
 
 	public function set_schedule() {
 		if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'biab_camera-schedule' ) ) {
-			$this->cron->set( intval( $_POST['interval'], 10 ) );
+			$cron = new CameraCron();
+			$cron->set( intval( $_POST['interval'], 10 ) );
 
-			wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin-camera&msg=saved' ) );
+			$control = new CameraControl();
+			if ( $control->set_schedule( $cron->get() ) ) {
+				wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin-camera&msg=saved' ) );
+			} else {
+				wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin-camera&msg=savefail' ) );
+			}
 		}
 	}
 
@@ -78,7 +82,7 @@ class BiabCamera {
 
 		<?php if ( isset( $_GET['msg'] ) && $_GET['msg'] === 'savefail' ) : ?>
 			<div class="notice notice-error">
-				<p><?php _e( 'Failed to update camera settings', 'bloginbox' ); ?></p>
+				<p><?php _e( 'Failed to update settings', 'bloginbox' ); ?></p>
 			</div>
 		<?php endif; ?>
 
@@ -117,20 +121,22 @@ class BiabCamera {
 	}
 
 	private function show_page_control() {
-		$interval = $this->cron->get_interval();
+		$control = new BiabControl();
+		$cron = new CameraCron();
+
 ?>
 	<h2 class="subsubsubheader"><?php _e( 'Camera Control', 'bloginbox' ); ?></h2>
 	<p><?php _e( 'With an attached <a target="_blank" href="https://www.raspberrypi.org/products/camera-module/">camera module</a> you can take a photo and have it automatically added to a new blog post.', 'bloginbox' ); ?></p>
 
 	<h3><?php _e( 'Manual Photo', 'bloginbox' ); ?></h3>
 	<p><?php _e( 'Take a photo right now by clicking this button.', 'bloginbox' ); ?></p>
-	<button class="button" id="submit-btn"><?php _e( 'Take Photo', 'bloginbox' ); ?></button>
+	<button class="button" id="take-photo"><?php _e( 'Take Photo', 'bloginbox' ); ?></button>
 
 	<h3><?php _e( 'Scheduled Photo', 'bloginbox' ); ?></h3>
-	<p><?php _e( 'Take a photo on a schedule by setting the number of seconds between each photo', 'bloginbox' ); ?>:</p>
+	<p><?php _e( 'Take a photo on a schedule by setting the number of minutes between each photo', 'bloginbox' ); ?>:</p>
 
 	<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
-		<p><label><input type="number" name="interval" value="<?php echo esc_attr( $interval ); ?>"/> <?php _e( 'photo interval (seconds)', 'bloginbox' ); ?></label></p>
+		<p><label><input type="number" name="interval" size="6" value="<?php echo esc_attr( $cron->get() ); ?>"/> <?php _e( 'photo interval (minutes)', 'bloginbox' ); ?></label></p>
 
 		<?php submit_button( false, 'small' ); ?>
 
@@ -139,11 +145,9 @@ class BiabCamera {
 	</form>
 
 	<h3><?php _e( 'Externally Triggered Photo', 'bloginbox' ); ?></h3>
-	<p><?php _e( 'Trigger a photo externally by hooking your trigger to the command <code>XXXX</code>.', 'bloginbox' ); ?></p>
+	<p><?php printf( __( 'Trigger a photo externally by hooking your trigger to the command <code>%s</code>.', 'bloginbox' ), BiabControl::COMMAND ); ?></p>
 	<p><?php _e( 'For example:', 'bloginbox' ); ?></p>
-	<pre>
-/opt/thing/XXXX &lt;<?php _e( 'title', 'bloginbox' ); ?>&gt;
-	</pre>
+	<p><code><?php echo esc_html( $control->get_path().'/'.BiabControl::COMMAND ) ?> camera photo [<?php _e( 'title', 'bloginbox' ); ?>]</code></p>
 <?php
 	}
 
