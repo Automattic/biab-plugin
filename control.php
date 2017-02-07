@@ -4,6 +4,14 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'Nope' );
 }
 
+if ( !function_exists( 'pr' ) ) {
+	function pr( $things ) {
+		echo '<pre>';
+		print_r( $things );
+		echo '</pre>';
+	}
+}
+
 class BiabControl {
 	const DEFAULT_PATH = '/opt/bloginabox';
 	const OPTION_NAME = 'biab_path';
@@ -19,7 +27,7 @@ class BiabControl {
 	}
 
 	public function set_path( $path ) {
-		update_option( self::OPTION_NAME, $path );
+		update_option( self::OPTION_NAME, rtrim( $path, '/' ) );
 	}
 
 	protected function request( $device, $command, $data ) {
