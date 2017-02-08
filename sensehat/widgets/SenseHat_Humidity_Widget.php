@@ -35,7 +35,7 @@ class SenseHat_Humidity_Widget extends WP_Widget {
 		" );
 		echo '<div>';
 		echo '<span>💦</span>';
-		echo esc_html__( $humidity[0] ? $humidity[0] . ' %': 'there is no data yet', 'text_domain' );
+		echo esc_html__( $humidity[0] ? $humidity[0] . ' %': ' -', 'text_domain' );
 		echo '</div>';
 		echo $args['after_widget'];
 	}

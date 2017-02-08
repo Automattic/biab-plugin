@@ -35,7 +35,7 @@ class SenseHat_Temperature_Widget extends WP_Widget {
 		" );
 		echo '<div>';
 		echo '<span>🌡</span>';
-		echo esc_html__( $temperature[0] ? $temperature[0] . ' °C': 'there is no data yet', 'text_domain' );
+		echo esc_html__( $temperature[0] ? $temperature[0] . ' °C': ' -', 'text_domain' );
 		echo '</div>';
 		echo $args['after_widget'];
 	}

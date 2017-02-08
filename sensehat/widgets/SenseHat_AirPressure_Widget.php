@@ -35,7 +35,7 @@ class SenseHat_AirPressure_Widget extends WP_Widget {
 		" );
 		echo '<div>';
 		echo '<span>💨</span>';
-		echo esc_html__( $air_pressure[0] ? $air_pressure[0] . ' mb': 'there is no data yet', 'text_domain' );
+		echo esc_html__( $air_pressure[0] ? $air_pressure[0] . ' mb': ' -', 'text_domain' );
 		echo '</div>';
 		echo $args['after_widget'];
 	}
