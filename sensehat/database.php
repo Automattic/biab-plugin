@@ -18,6 +18,7 @@ class Sensehat_Database {
 				temperature double NOT NULL,
 				humidity double NOT NULL,
 				air_pressure double NOT NULL,
+				created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				PRIMARY KEY  (id)
 		) $charset_collate;";
 
