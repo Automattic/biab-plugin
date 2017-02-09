@@ -2,12 +2,16 @@
 	display: none;
 }
 
-#camera-result img {
-	width: 640px;
+#TB_ajaxContent a img {
+	width: 600px;
 	height: auto;
-	padding: 5px;
-	border: 1px solid #ddd;
-	margin-top: 20px;
+	margin-top: 10px;
+}
+
+#TB_ajaxContent > img {
+	margin: 0 auto;
+	margin-top: 40%;
+	display: block;
 }
 
 .camera-snapshot img {

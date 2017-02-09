@@ -1,12 +1,6 @@
 ( function( $ ) {
-	function showCameraError() {
-		$( '#camera-photo' ).hide();
-		$( '#camera-error' ).show();
-	}
-
 	function takePhoto( url, data ) {
-		$( '#camera-photo' ).show();
-		$( '#camera-error' ).hide();
+		$( '#TB_ajaxContent' ).html( $( '#camera-loading' ).html() );
 
 		$.ajax( {
 			type: 'POST',
@@ -14,16 +8,14 @@
 			data: data,
 			dataType: 'json',
 			success: function( result ) {
-				$( '#camera-photo' ).hide();
-
 				if ( result.error ) {
-					showCameraError();
+					$( '#TB_ajaxContent' ).html( $( '#camera-error' ).html() );
 				} else {
-					$( '#camera-result' ).html( '<a href="' + result.url + '">' + result.image + '</a>' );
+					$( '#TB_ajaxContent' ).html( '<a href="' + result.url + '">' + result.image + '</a>' );
 				}
 			},
 			error: function( result ) {
-				showCameraError();
+				$( '#TB_ajaxContent' ).html( $( '#camera-error' ).html() );
 			}
 		} );
 	}
@@ -32,6 +24,7 @@
 		$( '#take-photo' ).click( function( ev ) {
 			var form = $( this ).closest( 'form' );
 
+			tb_show( ev.target.title, ev.target.href, false );
 			takePhoto( form.attr( 'action' ), form.serialize() );
 			ev.preventDefault();
 		} );

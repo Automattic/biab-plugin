@@ -145,6 +145,8 @@ class BiabCamera {
 	private function show_page_control() {
 		$control = new BiabControl();
 		$cron = new CameraCron();
+
+		add_thickbox();
 ?>
 	<h2 class="subsubsubheader"><?php _e( 'Camera Control', 'bloginbox' ); ?></h2>
 	<p><?php _e( 'With an attached <a target="_blank" href="https://www.raspberrypi.org/products/camera-module/">camera module</a> you can take a photo and have it automatically added to a new blog post.', 'bloginbox' ); ?></p>
@@ -155,18 +157,11 @@ class BiabCamera {
 		<input type="hidden" name="action" value="biab_take_photo" />
 		<?php wp_nonce_field( 'biab_camera-takephoto' ); ?>
 
-		<button class="button" id="take-photo"><?php _e( 'Take Photo', 'bloginbox' ); ?></button>
+		<a href="#TB_inline?width=600&amp;height=500&amp;inlineId=camera-lens" title="<?php echo esc_attr( __( 'Taking a photo' ) ); ?>" id="take-photo" class="button">Take Photo</a>
 
-		<div id="camera-photo" class="notice notice-success">
-			<p><?php _e( 'Taking a photo', 'bloginbox' ); ?></p>
-		</div>
-
-		<div id="camera-result">
-		</div>
-
-		<div id="camera-error" class="notice notice-error is-dismissible">
-			<p><?php _e( 'Sorry, a problem happened - maybe the camera is in use?', 'bloginbox' ); ?></p>
-		</div>
+		<div id="camera-loading" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
+		<div id="camera-failed" style="display:none;"><?php _e( 'Failed to take a picture', 'bloginabox' ); ?></div>
+		<div id="camera-lens" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
 	</form>
 
 	<h3><?php _e( 'Scheduled Photo', 'bloginbox' ); ?></h3>
