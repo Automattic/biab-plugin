@@ -186,7 +186,7 @@ class BiabCamera {
 	<h3><?php _e( 'Externally Triggered Photo', 'bloginbox' ); ?></h3>
 	<p><?php printf( __( 'Trigger a photo externally by hooking your trigger to the command <code>%s</code>.', 'bloginbox' ), BiabControl::COMMAND ); ?></p>
 	<p><?php _e( 'For example:', 'bloginbox' ); ?></p>
-	<p><code><?php echo esc_html( $control->get_path().'/'.BiabControl::COMMAND ) ?> camera photo [<?php _e( 'title', 'bloginbox' ); ?>]</code></p>
+	<p><code><?php echo esc_html( $control->get_path().'/'.BiabControl::COMMAND ) ?> camera-take-photo [<?php _e( 'title', 'bloginbox' ); ?>]</code></p>
 <?php
 	}
 

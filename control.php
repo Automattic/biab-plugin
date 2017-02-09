@@ -34,7 +34,10 @@ class BiabControl {
 		$file = 'sudo -u pi '.$this->get_path().'/'.self::COMMAND;
 
 		$cmd = $file.' '.escapeshellarg( $command );
-		$cmd .= ' '.escapeshellarg( $data );
+		if ( $data ) {
+			$cmd .= ' '.escapeshellarg( $data );
+		}
+
 		$cmd = escapeshellcmd( $cmd );
 
 		$result = array();
