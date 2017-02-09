@@ -30,10 +30,11 @@ class BiabControl {
 		update_option( self::OPTION_NAME, rtrim( $path, '/' ) );
 	}
 
-	protected function request( $device, $command, $data ) {
+	protected function request( $command, $data = '' ) {
 		$file = 'sudo -u pi '.$this->get_path().'/'.self::COMMAND;
 
-		$cmd = $file.' '.escapeshellarg( $device ).' '.escapeshellarg( $command ).' '.escapeshellarg( $data );
+		$cmd = $file.' '.escapeshellarg( $command );
+		$cmd .= ' '.escapeshellarg( $data );
 		$cmd = escapeshellcmd( $cmd );
 
 		$result = array();

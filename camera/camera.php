@@ -35,15 +35,34 @@ class BiabCamera {
 
 	public function wp_head() {
 		wp_enqueue_style( 'bloginbox', plugin_dir_url( BIAB_FILE ).'plugin.css' );
+		wp_enqueue_style( 'bloginbox-camera', plugin_dir_url( __FILE__ ).'camera.css' );
+		wp_enqueue_script( 'biab-camera', plugin_dir_url( __FILE__ ).'camera.js', 'jquery' );
+	}
+
+	public function take_photo() {
+		$control = new CameraControl();
+		$result = $control->take_photo();
+
+		if ( $result !== false ) {
+			echo json_encode( array(
+				'post_id' => $result,
+				'image' => get_the_post_thumbnail( $result ),
+				'url' => get_post_permalink( $result ),
+			) );
+			return;
+		}
+
+		echo json_encode( array( 'error' => true ) );
 	}
 
 	public function set_schedule() {
 		if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'biab_camera-schedule' ) ) {
 			$cron = new CameraCron();
-			$cron->set( intval( $_POST['interval'], 10 ) );
+			$cron->set_interval( intval( $_POST['interval'], 10 ) );
+			$cron->set_period( $_POST['period'] );
 
 			$control = new CameraControl();
-			if ( $control->set_schedule( $cron->get() ) ) {
+			if ( $control->set_schedule( $cron->get_interval(), $cron->get_period() ) ) {
 				wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin-camera&msg=saved' ) );
 			} else {
 				wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin-camera&msg=savefail' ) );
@@ -123,20 +142,42 @@ class BiabCamera {
 	private function show_page_control() {
 		$control = new BiabControl();
 		$cron = new CameraCron();
-
 ?>
 	<h2 class="subsubsubheader"><?php _e( 'Camera Control', 'bloginbox' ); ?></h2>
 	<p><?php _e( 'With an attached <a target="_blank" href="https://www.raspberrypi.org/products/camera-module/">camera module</a> you can take a photo and have it automatically added to a new blog post.', 'bloginbox' ); ?></p>
 
 	<h3><?php _e( 'Manual Photo', 'bloginbox' ); ?></h3>
 	<p><?php _e( 'Take a photo right now by clicking this button.', 'bloginbox' ); ?></p>
-	<button class="button" id="take-photo"><?php _e( 'Take Photo', 'bloginbox' ); ?></button>
+	<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
+		<input type="hidden" name="action" value="biab_take_photo" />
+		<?php wp_nonce_field( 'biab_camera-takephoto' ); ?>
+
+		<button class="button" id="take-photo"><?php _e( 'Take Photo', 'bloginbox' ); ?></button>
+
+		<div id="camera-photo" class="notice notice-success">
+			<p><?php _e( 'Taking a photo', 'bloginbox' ); ?></p>
+		</div>
+
+		<div id="camera-result">
+		</div>
+
+		<div id="camera-error" class="notice notice-error is-dismissible">
+			<p><?php _e( 'Sorry, a problem happened - maybe the camera is in use?', 'bloginbox' ); ?></p>
+		</div>
+	</form>
 
 	<h3><?php _e( 'Scheduled Photo', 'bloginbox' ); ?></h3>
-	<p><?php _e( 'Take a photo on a schedule by setting the number of minutes between each photo', 'bloginbox' ); ?>:</p>
+	<p><?php _e( 'Take a photo on a schedule by setting a period between each photo.', 'bloginbox' ); ?>:</p>
 
 	<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
-		<p><label><input type="number" name="interval" size="6" value="<?php echo esc_attr( $cron->get() ); ?>"/> <?php _e( 'photo interval (minutes)', 'bloginbox' ); ?></label></p>
+		<p>
+			<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $cron->get_interval() ); ?>"/>
+			<select name="period">
+				<?php foreach ( $cron->get_periods() as $key => $name ) : ?>
+					<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $cron->get_period(), $key ) ?>><?php echo esc_html( $name ); ?></option>
+				<?php endforeach; ?>
+			</select>
+		</p>
 
 		<?php submit_button( false, 'small' ); ?>
 
@@ -233,26 +274,6 @@ class BiabCamera {
 	</form>
 <?php
 	}
-// 	<script>
-// 		function take_photo() {
-// 			jQuery('#submit-btn').hide();
-// 			jQuery('#loading-gif').show();
-// 			jQuery.ajax({
-// 				type: "POST",
-// 				url: "admin-post.php",
-// 				data: { action: 'biab_take_photo' },
-// 				dataType: 'json',
-// 				success: function( data ) {
-// 					jQuery('#loading-gif').hide();
-// 					jQuery('#submit-btn').show();
-// 					jQuery('#result').html("<div style='padding:8px 0'><a href='"+data.post_url+"'><img src='"+data.photo_url+"' width='256'></a></div>");
-// 				}
-// 			} );
-// 			return false; // so page doesn't refresh
-// 		}
-// 	</script>
-// <?php
-// 	}
 }
 
 add_action( 'init', array( 'BiabCamera', 'init' ), 11 );

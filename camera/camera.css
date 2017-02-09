@@ -1,0 +1,11 @@
+#camera-photo, #camera-error {
+	display: none;
+}
+
+#camera-result img {
+	width: 640px;
+	height: auto;
+	padding: 5px;
+	border: 1px solid #ddd;
+	margin-top: 20px;
+}

@@ -1,14 +1,22 @@
 <?php
 
 class CameraControl extends BiabControl {
-	const DEVICE = 'camera';
-
 	public function take_photo() {
+		$result = $this->request( 'takephoto' );
 
+		if ( $result['retval'] === 0 ) {
+			$json = json_decode( $result['output'][0] );
+
+			if ( !isset( $json->error ) ) {
+				return intval( $json->id, 10 );
+			}
+		}
+
+		return false;
 	}
 
-	public function set_schedule( $interval ) {
-		$result = $this->request( self::DEVICE, 'schedule', intval( $interval, 10 ) );
+	public function set_schedule( $interval, $period ) {
+		$result = $this->request( 'cameraschedule', intval( $interval, 10 ).' '.$period );
 
 		if ( $result['retval'] === 0 ) {
 			return true;
@@ -46,7 +54,7 @@ class CameraControl extends BiabControl {
 			$cmd[] = '--iso '.$settings['iso'];
 		}
 
-		$result = $this->request( self::DEVICE, 'settings', implode( ' ', $cmd ) );
+		$result = $this->request( 'camerasettings', implode( ' ', $cmd ) );
 		if ( $result['retval'] === 0 ) {
 			return true;
 		}
