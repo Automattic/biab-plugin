@@ -108,19 +108,19 @@ class BiabSensehat {
 	}
 
 	public static function register_temperature_widget() {
-		require_once dirname( __FILE__ ).'/widgets/SenseHat_Temperature_Widget.php';
+		require_once dirname( __FILE__ ).'/widgets/temperature.php';
 
 		register_widget( 'SenseHat_Temperature_Widget' );
 	}
 
 	public static function register_humidity_widget() {
-		require_once dirname( __FILE__ ).'/widgets/SenseHat_Humidity_Widget.php';
+		require_once dirname( __FILE__ ).'/widgets/humidity.php';
 
 		register_widget( 'SenseHat_Humidity_Widget' );
 	}
 
 	public static function register_airpressure_widget() {
-		require_once dirname( __FILE__ ).'/widgets/SenseHat_AirPressure_Widget.php';
+		require_once dirname( __FILE__ ).'/widgets/airpressure.php';
 
 		register_widget( 'SenseHat_AirPressure_Widget' );
 	}
