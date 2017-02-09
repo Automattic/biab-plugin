@@ -79,10 +79,13 @@ class BiabCamera {
 			$control = new CameraControl();
 
 			if ( $control->save_settings( $settings->get() ) ) {
-				wp_safe_redirect( add_query_arg( 'msg', 'saved', $redirect ) );
+				$redirect = add_query_arg( 'msg', 'saved', $redirect );
 			} else {
-				wp_safe_redirect( add_query_arg( 'msg', 'savefail', $redirect ) );
+				$redirect = add_query_arg( 'msg', 'savefail', $redirect );
 			}
+
+			$control->take_snapshot();
+			wp_safe_redirect( $redirect );
 		}
 	}
 
@@ -194,10 +197,18 @@ class BiabCamera {
 
 	private function show_page_settings() {
 		$settings = new CameraSettings();
+
+		$snapshot = wp_upload_dir();
+		if ( ! file_exists( $snapshot['basedir'].'/snapshot.jpg' ) ) {
+			$control = new CameraControl();
+			$control->take_snapshot();
+		}
 ?>
 	<h2 class="subsubsubheader"><?php _e( 'Camera Settings', 'bloginbox' ); ?></h2>
 
 	<p><?php _e( 'These settings affect the image taken by the camera. Changing a value will update the image preview.', 'bloginbox' ); ?></p>
+
+	<div class="camera-snapshot"><img src="/wp-content/uploads/snapshot.jpg"/></div>
 
 	<form method="POST" action="<?php echo admin_url( 'admin-post.php' ); ?>">
 		<table class="form-table">

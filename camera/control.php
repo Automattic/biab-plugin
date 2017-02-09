@@ -1,6 +1,10 @@
 <?php
 
 class CameraControl extends BiabControl {
+	public function take_snapshot() {
+		return $this->has_no_error( $this->request( 'camera-snapshot' ) );
+	}
+
 	public function take_photo() {
 		$result = $this->request( 'camera-take-photo' );
 
