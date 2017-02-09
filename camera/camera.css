@@ -9,3 +9,9 @@
 	border: 1px solid #ddd;
 	margin-top: 20px;
 }
+
+.camera-snapshot img {
+	position: absolute;
+	right: 40px;
+	width: 400px;
+}

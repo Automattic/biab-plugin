@@ -79,10 +79,13 @@ class BiabCamera {
 			$control = new CameraControl();
 
 			if ( $control->save_settings( $settings->get() ) ) {
-				wp_safe_redirect( add_query_arg( 'msg', 'saved', $redirect ) );
+				$redirect = add_query_arg( 'msg', 'saved', $redirect );
 			} else {
-				wp_safe_redirect( add_query_arg( 'msg', 'savefail', $redirect ) );
+				$redirect = add_query_arg( 'msg', 'savefail', $redirect );
 			}
+
+			$control->take_snapshot();
+			wp_safe_redirect( $redirect );
 		}
 	}
 
@@ -195,43 +198,50 @@ class BiabCamera {
 	private function show_page_settings() {
 		$settings = new CameraSettings();
 
+		$snapshot = wp_upload_dir();
+		if ( ! file_exists( $snapshot['basedir'].'/snapshot.jpg' ) ) {
+			$control = new CameraControl();
+			$control->take_snapshot();
+		}
 ?>
 	<h2 class="subsubsubheader"><?php _e( 'Camera Settings', 'bloginbox' ); ?></h2>
 
-	<p>These settings affect the image taken by the camera. Changing a value will update the image preview.</p>
+	<p><?php _e( 'These settings affect the image taken by the camera. Changing a value will update the image preview.', 'bloginbox' ); ?></p>
+
+	<div class="camera-snapshot"><img src="/wp-content/uploads/snapshot.jpg"/></div>
 
 	<form method="POST" action="<?php echo admin_url( 'admin-post.php' ); ?>">
 		<table class="form-table">
 			<tr>
-				<th>Vertical flip</th>
+				<th><?php _e( 'Vertical flip', 'bloginbox' ); ?></th>
 				<td><input type="checkbox" name="vertical" <?php checked( $settings->is_enabled( 'vflip' ) ); ?>/></td>
 			</tr>
 			<tr>
-				<th>Horizontal flip</th>
+				<th><?php _e( 'Horizontal flip', 'bloginbox' ); ?></th>
 				<td><input type="checkbox" name="horizontal" <?php checked( $settings->is_enabled( 'hflip' ) ); ?>/></td>
 			</tr>
 			<tr>
-				<th>Quality</th>
+				<th><?php _e( 'Quality', 'bloginbox' ); ?></th>
 				<td><input type="number" name="quality" min="0" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'quality' ) ); ?>"/> 0 to 100</td>
 			</tr>
 			<tr>
-				<th>Brightness</th>
+				<th><?php _e( 'Brightness', 'bloginbox' ); ?></th>
 				<td><input type="number" name="brightness" min="0" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'brightness' ) ); ?>"/> 0 to 100</td>
 			</tr>
 			<tr>
-				<th>Saturation</th>
+				<th><?php _e( 'Saturation', 'bloginbox' ); ?></th>
 				<td><input type="number" name="saturation" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'saturation' ) ); ?>"/> -100 to 100</td>
 			</tr>
 			<tr>
-				<th>Sharpness</th>
+				<th><?php _e( 'Sharpness', 'bloginbox' ); ?></th>
 				<td><input type="number" name="sharpness" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'sharpness' ) ); ?>"/> -100 to 100</td>
 			</tr>
 			<tr>
-				<th>Contrast</th>
+				<th><?php _e( 'Contrast', 'bloginbox' ); ?></th>
 				<td><input type="number" name="contrast" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'contrast' ) ); ?>"/> -100 to 100</td>
 			</tr>
 			<tr>
-				<th>ISO</th>
+				<th><?php _e( 'ISO', 'bloginbox' ); ?></th>
 				<td>
 					<select name="iso">
 						<?php foreach ( $settings->get_iso_values() as $iso ) : ?>
@@ -243,7 +253,7 @@ class BiabCamera {
 				</td>
 			</tr>
 			<tr>
-				<th>White Balance</th>
+				<th><?php _e( 'White Balance', 'bloginbox' ); ?></th>
 				<td>
 					<select name="awb">
 						<?php foreach ( $settings->get_awb_values() as $awb_key => $awb_name ) : ?>
@@ -255,7 +265,7 @@ class BiabCamera {
 				</td>
 			</tr>
 			<tr>
-				<th>Effect</th>
+				<th><?php _e( 'Effect', 'bloginbox' ); ?></th>
 				<td>
 					<select name="effect">
 						<?php foreach ( $settings->get_effect_values() as $name => $title ) : ?>

@@ -1,6 +1,10 @@
 <?php
 
 class CameraControl extends BiabControl {
+	public function take_snapshot() {
+		return $this->has_no_error( $this->request( 'camera-snapshot' ) );
+	}
+
 	public function take_photo() {
 		$result = $this->request( 'camera-take-photo' );
 
@@ -16,13 +20,7 @@ class CameraControl extends BiabControl {
 	}
 
 	public function set_schedule( $interval, $period ) {
-		$result = $this->request( 'camera-schedule', intval( $interval, 10 ).' '.$period );
-
-		if ( $result['retval'] === 0 ) {
-			return true;
-		}
-
-		return false;
+		return $this->has_no_error( $this->request( 'camera-schedule', intval( $interval, 10 ).' '.$period ) );
 	}
 
 	public function save_settings( $settings ) {
@@ -54,11 +52,6 @@ class CameraControl extends BiabControl {
 			$cmd[] = '--iso '.$settings['iso'];
 		}
 
-		$result = $this->request( 'camera-settings', implode( ' ', $cmd ) );
-		if ( $result['retval'] === 0 ) {
-			return true;
-		}
-
-		return false;
+		return $this->has_no_error( $this->request( 'camera-settings', implode( ' ', $cmd ) ) );
 	}
 }

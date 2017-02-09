@@ -47,4 +47,12 @@ class BiabControl {
 			'output' => $result,
 		);
 	}
+
+	protected function has_no_error( $result ) {
+		if ( $result['retval'] === 0 ) {
+			return true;
+		}
+
+		return false;
+	}
 }
