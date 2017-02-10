@@ -1,6 +1,6 @@
 <?php
 
-include dirname( __FILE__ ).'/cron.php';
+include dirname( __FILE__ ).'/settings.php';
 include dirname( __FILE__ ).'/control.php';
 
 class BiabSensehat {
@@ -20,7 +20,7 @@ class BiabSensehat {
 		if ( $enabled ) {
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 			add_action( 'blog-in-a-box_page_biab-plugin-sensehat', array( $this, 'wp_head' ) );
-			add_action( 'admin_post_biab_sensehat_schedule', array( $this, 'set_schedule' ) );
+			add_action( 'admin_post_biab_sensehat_options', array( $this, 'set_options' ) );
 		}
 	}
 
@@ -46,14 +46,16 @@ class BiabSensehat {
 		$database->remove();
 	}
 
-	public function set_schedule() {
-		if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'biab_sensehat-schedule' ) ) {
-			$cron = new SensehatCron();
-			$cron->set_interval( intval( $_POST['interval'], 10 ) );
-			$cron->set_period( $_POST['period'] );
+	public function set_options() {
+		if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'biab_sensehat-options' ) ) {
+			$settings = new SensehatSettings();
+			$settings->set_interval( intval( $_POST['interval'], 10 ) );
+			$settings->set_period( $_POST['period'] );
+			$settings->set_display( isset( $_POST['display'] ) );
+			$settings->set_units( $_POST['units'] );
 
 			$control = new SensehatControl();
-			if ( $control->set_schedule( $cron->get_interval(), $cron->get_period() ) ) {
+			if ( $control->set_options( $settings->get_interval(), $settings->get_period(), $settings->get_display(), $settings->get_units() ) ) {
 				wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin-sensehat&msg=saved' ) );
 			} else {
 				wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin-sensehat&msg=savefail' ) );
@@ -62,7 +64,8 @@ class BiabSensehat {
 	}
 
 	public function show_page() {
-		$cron = new SensehatCron();
+		$settings = new SensehatSettings();
+
 		?>
 		<div class="wrap">
 			<?php if ( isset( $_GET['msg'] ) && $_GET['msg'] === 'saved' ) : ?>
@@ -90,18 +93,25 @@ class BiabSensehat {
 
 			<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
 				<p>
-					<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $cron->get_interval() ); ?>"/>
+					<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $settings->get_interval() ); ?>"/>
 					<select name="period">
-						<?php foreach ( $cron->get_periods() as $key => $name ) : ?>
-							<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $cron->get_period(), $key ) ?>><?php echo esc_html( $name ); ?></option>
+						<?php foreach ( $settings->get_periods() as $key => $name ) : ?>
+							<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $settings->get_period(), $key ) ?>><?php echo esc_html( $name ); ?></option>
 						<?php endforeach; ?>
 					</select>
 				</p>
 
+				<p><label><input type="checkbox" name="display" <?php checked( $settings->get_display() ); ?>/> <?php _e( 'enable display for readings and camera activity', 'bloginbox' ); ?></label></p>
+				<p>
+					<?php _e( 'Units', 'bloginbox' ); ?>:
+					<label><input <?php checked( $settings->get_units() === 'celsius' ) ?> type="radio" name="units" value="celsius"/> <?php _e( 'Celsius', 'bloginbox' ); ?></label>
+					<label><input <?php checked( $settings->get_units() === 'fahrenheit' ) ?> type="radio" name="units" value="fahrenheit"/> <?php _e( 'Fahrenheit', 'bloginbox' ); ?></label>
+				</p>
+
 				<?php submit_button(); ?>
 
-				<input type="hidden" name="action" value="biab_sensehat_schedule" />
-				<?php wp_nonce_field( 'biab_sensehat-schedule' ); ?>
+				<input type="hidden" name="action" value="biab_sensehat_options" />
+				<?php wp_nonce_field( 'biab_sensehat-options' ); ?>
 			</form>
 		</div>
 		<?php
