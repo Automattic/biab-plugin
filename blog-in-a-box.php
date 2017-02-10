@@ -26,7 +26,13 @@ function biab_is_module_enabled( $module ) {
 
 class BiabModules extends BiabControl {
 	public function set_modules( $modules ) {
-		return $this->has_no_error( $this->request( 'devices', join( ',', array_keys( array_filter( $modules ) ) ) ) );
+		$device = array(
+			join( ',', array_keys( array_filter( $modules ) ) ),
+			get_home_path(),
+			get_rest_url(),
+		);
+
+		return $this->has_no_error( $this->request( 'devices', join( ' ' , $device ) ) );
 	}
 }
 
@@ -127,7 +133,7 @@ class BlogInBox {
 			<?php endforeach; ?>
 		</ul>
 
-		<h4><?php _e( 'Plugin Control', 'bloginbox' ); ?></h4>
+		<h4><?php _e( 'Plugin Setup', 'bloginbox' ); ?></h4>
 		<?php _e( 'Plugin control path', 'bloginbox' ); ?> <input type="text" name="path" value="<?php echo esc_attr( $control->get_path() ); ?>"/> <?php _e( "The full path to the plugin's control companion", 'bloginbox' ); ?>
 
  		<input type="hidden" name="action" value="biab_modules" />
