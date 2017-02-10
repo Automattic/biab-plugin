@@ -26,16 +26,12 @@ class SenseHat_Temperature_Widget extends WP_Widget {
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
 		}
-		global $wpdb;
-		$temperature = $wpdb->get_col( "
-			SELECT ROUND(temperature)
-			FROM wp_sense_hat
-			ORDER BY id DESC LIMIT 1
-			;
-		" );
+		$request = new WP_REST_Request( 'GET', '/biab/v1/sensehat' );
+		$response = rest_do_request( $request );
+		$temperature = $response->get_data()->temperature;
 		echo '<div>';
 		echo '<span>🌡</span>';
-		echo esc_html__( $temperature[0] ? $temperature[0] . ' °C': ' -', 'text_domain' );
+		echo esc_html__( $temperature ? $temperature . ' °C' : ' -', 'text_domain' );
 		echo '</div>';
 		echo $args['after_widget'];
 	}

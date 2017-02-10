@@ -26,16 +26,12 @@ class SenseHat_AirPressure_Widget extends WP_Widget {
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
 		}
-		global $wpdb;
-		$air_pressure = $wpdb->get_col( "
-			SELECT ROUND(air_pressure)
-			FROM wp_sense_hat
-			ORDER BY id DESC LIMIT 1
-			;
-		" );
+		$request = new WP_REST_Request( 'GET', '/biab/v1/sensehat' );
+		$response = rest_do_request( $request );
+		$air_pressure = $response->get_data()->air_pressure;
 		echo '<div>';
 		echo '<span>💨</span>';
-		echo esc_html__( $air_pressure[0] ? $air_pressure[0] . ' mb': ' -', 'text_domain' );
+		echo esc_html__( $air_pressure ? $air_pressure . ' mb' : ' -' , 'text_domain' );
 		echo '</div>';
 		echo $args['after_widget'];
 	}

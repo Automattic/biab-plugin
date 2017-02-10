@@ -26,16 +26,12 @@ class SenseHat_Humidity_Widget extends WP_Widget {
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
 		}
-		global $wpdb;
-		$humidity = $wpdb->get_col( "
-			SELECT ROUND(humidity)
-			FROM wp_sense_hat
-			ORDER BY id DESC LIMIT 1
-			;
-		" );
+		$request = new WP_REST_Request( 'GET', '/biab/v1/sensehat' );
+		$response = rest_do_request( $request );
+		$humidity = $response->get_data()->humidity;
 		echo '<div>';
 		echo '<span>💦</span>';
-		echo esc_html__( $humidity[0] ? $humidity[0] . ' %': ' -', 'text_domain' );
+		echo esc_html__( $humidity ? $humidity . ' %' : ' -', 'text_domain' );
 		echo '</div>';
 		echo $args['after_widget'];
 	}
