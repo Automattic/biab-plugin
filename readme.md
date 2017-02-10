@@ -1,21 +1,17 @@
 # Blog In A Box
 
-Repository for Blog in a Box project
-
-## WordPress Installation
-
 Blog In A Box comes as two parts:
 
-- WordPress plugin
-- CLI utility
+- [WordPress plugin](https://github.com/tinkertinker/biab-plugin)
+- [CLI utility](https://github.com/tinkertinker/biab-cli)
 
 ### WordPress Plugin
 
-The plugin is installed as per a normal WordPress plugin.
+This repository contains the plugin, which is installed as per a normal WordPress plugin.
 
 ### CLI Utility Installation
 
-The CLI tools should be installed in the following location (default, but can be changed):
+The CLI tools may be found in the [companion repository](https://github.com/tinkertinker/biab-cli) and be installed in the following location (default, but can be changed):
 
 `/opt/bloginabox/`
 
