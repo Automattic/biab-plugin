@@ -24,6 +24,12 @@ function biab_is_module_enabled( $module ) {
 	return false;
 }
 
+class BiabModules extends BiabControl {
+	public function set_modules( $modules ) {
+		return $this->has_no_error( $this->request( 'devices', join( ',', array_keys( array_filter( $modules ) ) ) ) );
+	}
+}
+
 class BlogInBox {
 	private static $instance = null;
 
@@ -65,7 +71,12 @@ class BlogInBox {
 			$control = new BiabControl();
 			$control->set_path( $_POST['path'] );
 
-			wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin&msg=saved' ) );
+			$modules = new BiabModules();
+			if ( $modules->set_modules( $enabled ) ) {
+				wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin&msg=saved' ) );
+			} else {
+				wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin&msg=savefail' ) );
+			}
 		}
 	}
 
@@ -84,6 +95,12 @@ class BlogInBox {
 	<?php if ( isset( $_GET['msg'] ) && $_GET['msg'] === 'saved' ) : ?>
 		<div class="notice notice-success is-dismissible">
 			<p><?php _e( 'Saved!', 'bloginbox' ); ?></p>
+		</div>
+	<?php endif; ?>
+
+	<?php if ( isset( $_GET['msg'] ) && $_GET['msg'] === 'savefail' ) : ?>
+		<div class="notice notice-error">
+			<p><?php _e( 'Failed to update settings', 'bloginbox' ); ?></p>
 		</div>
 	<?php endif; ?>
 
