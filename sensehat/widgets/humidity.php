@@ -8,8 +8,8 @@ class SenseHat_Humidity_Widget extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'sensehat_humidity_widget', // Base ID
-			esc_html__( 'SenseHat Humidity', 'text_domain' ), // Name
-			array( 'description' => esc_html__( 'SenseHat Humidity Widget', 'text_domain' ), ) // Args
+			esc_html__( 'SenseHat Humidity', 'bloginbox' ), // Name
+			array( 'description' => esc_html__( 'SenseHat Humidity Widget', 'bloginbox' ), ) // Args
 		);
 	}
 
@@ -31,9 +31,17 @@ class SenseHat_Humidity_Widget extends WP_Widget {
 		$humidity = $response->get_data()->humidity;
 		echo '<div>';
 		echo '<span>💦</span>';
-		echo esc_html__( $humidity ? $humidity . ' %' : ' -', 'text_domain' );
+		echo $this->get_humidity( $humidity );
 		echo '</div>';
 		echo $args['after_widget'];
+	}
+
+	private function get_humidity( $humidity ) {
+		if ( $humidity ) {
+			return round( $humidity, 1 ).'%';
+		}
+
+		return '-';
 	}
 
 	/**
@@ -44,10 +52,10 @@ class SenseHat_Humidity_Widget extends WP_Widget {
 	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
-		$title = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'Humidity', 'text_domain' );
+		$title = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'Humidity', 'bloginbox' );
 		?>
 		<p>
-		<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'Title:', 'text_domain' ); ?></label>
+		<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'Title:', 'bloginbox' ); ?></label>
 		<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
 		</p>
 		<?php

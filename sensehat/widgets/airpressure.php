@@ -8,8 +8,8 @@ class SenseHat_AirPressure_Widget extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'sensehat_airpressure_widget', // Base ID
-			esc_html__( 'SenseHat Air Pressure', 'text_domain' ), // Name
-			array( 'description' => esc_html__( 'SenseHat Air Pressure Widget', 'text_domain' ), ) // Args
+			esc_html__( 'SenseHat Air Pressure', 'bloginbox' ), // Name
+			array( 'description' => esc_html__( 'SenseHat Air Pressure Widget', 'bloginbox' ), ) // Args
 		);
 	}
 
@@ -31,9 +31,17 @@ class SenseHat_AirPressure_Widget extends WP_Widget {
 		$air_pressure = $response->get_data()->air_pressure;
 		echo '<div>';
 		echo '<span>💨</span>';
-		echo esc_html__( $air_pressure ? $air_pressure . ' mb' : ' -' , 'text_domain' );
+		echo esc_html( $this->get_pressure( $air_pressure ) );
 		echo '</div>';
 		echo $args['after_widget'];
+	}
+
+	private function get_pressure( $pressure ) {
+		if ( $pressure ) {
+			return round( $pressure ).' mb';
+		}
+
+		return '-';
 	}
 
 	/**
@@ -44,10 +52,10 @@ class SenseHat_AirPressure_Widget extends WP_Widget {
 	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
-		$title = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'Air Pressure', 'text_domain' );
+		$title = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'Air Pressure', 'bloginbox' );
 		?>
 		<p>
-		<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'Title:', 'text_domain' ); ?></label>
+		<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'Title:', 'bloginbox' ); ?></label>
 		<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
 		</p>
 		<?php

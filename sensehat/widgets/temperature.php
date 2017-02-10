@@ -8,8 +8,8 @@ class SenseHat_Temperature_Widget extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'sensehat_temperature_widget', // Base ID
-			esc_html__( 'SenseHat Temperature', 'text_domain' ), // Name
-			array( 'description' => esc_html__( 'SenseHat Temperature Widget', 'text_domain' ), ) // Args
+			esc_html__( 'SenseHat Temperature', 'bloginbox' ), // Name
+			array( 'description' => esc_html__( 'SenseHat Temperature Widget', 'bloginbox' ), ) // Args
 		);
 	}
 
@@ -29,11 +29,27 @@ class SenseHat_Temperature_Widget extends WP_Widget {
 		$request = new WP_REST_Request( 'GET', '/biab/v1/sensehat' );
 		$response = rest_do_request( $request );
 		$temperature = $response->get_data()->temperature;
+
 		echo '<div>';
 		echo '<span>🌡</span>';
-		echo esc_html__( $temperature ? $temperature . ' °C' : ' -', 'text_domain' );
+		echo esc_html( $this->get_temperature( $temperature ) );
 		echo '</div>';
 		echo $args['after_widget'];
+	}
+
+	private function get_temperature( $temp ) {
+		$settings = new SensehatSettings();
+		$units = $settings->get_units() === 'celsius' ? 'C' : 'F';
+
+		if ( $temp ) {
+			if ( $units === 'F' ) {
+				$temp = $temp * ( 9 / 5 ) + 32;
+			}
+
+			return round( $temp, 1 ). ' °' . $units;
+		}
+
+		return '-';
 	}
 
 	/**
@@ -44,10 +60,10 @@ class SenseHat_Temperature_Widget extends WP_Widget {
 	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
-		$title = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'Temperature', 'text_domain' );
+		$title = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'Temperature', 'bloginbox' );
 		?>
 		<p>
-		<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'Title:', 'text_domain' ); ?></label>
+		<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'Title:', 'bloginbox' ); ?></label>
 		<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
 		</p>
 		<?php

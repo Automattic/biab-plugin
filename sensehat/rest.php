@@ -23,9 +23,9 @@ class BiabSenseHAT_REST {
 
 		global $wpdb;
 		$values = $wpdb->get_row( "
-			SELECT ROUND( temperature ) AS temperature,
-				   ROUND( humidity ) AS humidity,
-				   ROUND( air_pressure ) AS air_pressure,
+			SELECT temperature AS temperature,
+				   humidity AS humidity,
+				   air_pressure AS air_pressure,
 				   created_at AS timestamp
 			FROM wp_sense_hat
 			ORDER BY id DESC LIMIT 1
