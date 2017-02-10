@@ -15,9 +15,9 @@ class Sensehat_Database {
 
 		$sql = "CREATE TABLE $table_name (
 				id mediumint(9) NOT NULL AUTO_INCREMENT,
-				temperature double NOT NULL,
-				humidity double NOT NULL,
-				air_pressure double NOT NULL,
+				temperature double,
+				humidity double,
+				air_pressure double,
 				created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				PRIMARY KEY  (id)
 		) $charset_collate;";

@@ -2,6 +2,7 @@
 
 include dirname( __FILE__ ).'/cron.php';
 include dirname( __FILE__ ).'/control.php';
+include dirname( __FILE__ ).'/rest.php';
 
 class BiabSensehat {
 	private static $instance = null;
@@ -133,6 +134,7 @@ if ( biab_is_module_enabled( 'sensehat' ) ) {
 	add_action( 'widgets_init', array( 'BiabSensehat', 'register_airpressure_widget' ) );
 	add_action( 'widgets_init', array( 'BiabSensehat', 'register_humidity_widget' ) );
 	add_action( 'widgets_init', array( 'BiabSensehat', 'register_temperature_widget' ) );
+	add_action( 'rest_api_init', array( 'BiabSensehat_REST', 'register_sensehat_routes' ) );
 }
 
 register_activation_hook( BIAB_FILE, array( 'BiabSensehat', 'plugin_activated' ) );
