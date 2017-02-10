@@ -2,7 +2,7 @@
 
 class BiabSenseHAT_REST {
 
-	public function register_sensehat_routes( ) {
+	public static function register_sensehat_routes( ) {
 		register_rest_route( 'biab/v1', '/sensehat', array(
 			'methods' => 'GET',
 			'callback' => array( 'BiabSensehat_REST', 'get_reading' ),
