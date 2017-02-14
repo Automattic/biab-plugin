@@ -14,25 +14,31 @@ class BiabSenseHAT_REST {
 	}
 
 	public static function get_reading( WP_REST_Request $request ) {
-		$default_values = (object) array(
-			'temperature' => null,
-			'humidity' => null,
-			'air_pressure' => null,
-			'timestamp' => null
-		);
+		if( isset( $request[ 'before' ] ) && isset( $request[ 'after' ] ) ) {
+			$sql_query = "
+			SELECT temperature AS temperature,
+				humidity AS humidity,
+				air_pressure AS air_pressure,
+				created_at AS timestamp
+			FROM wp_sense_hat
+			WHERE date(created_at) >= '".$request['after']."'
+				AND date(created_at) <= '".$request['before']."'
+			";
+		} else {
+			$sql_query = "
+			SELECT temperature AS temperature,
+				humidity AS humidity,
+				air_pressure AS air_pressure,
+				created_at AS timestamp
+			FROM wp_sense_hat
+			ORDER BY id DESC LIMIT 1;
+			";
+		}
 
 		global $wpdb;
-		$values = $wpdb->get_row( "
-			SELECT temperature AS temperature,
-				   humidity AS humidity,
-				   air_pressure AS air_pressure,
-				   created_at AS timestamp
-			FROM wp_sense_hat
-			ORDER BY id DESC LIMIT 1
-			;
-		" );
+		$values = $wpdb->get_results( $sql_query );
+		return $values ? $values : [];
 
-		return $values ? $values : $default_values;
 	}
 
 	public static function insert_reading( WP_REST_Request $request ) {
@@ -53,4 +59,5 @@ class BiabSenseHAT_REST {
 
 		return $request->get_params();
 	}
+
 }

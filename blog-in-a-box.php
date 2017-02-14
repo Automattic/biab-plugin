@@ -53,6 +53,7 @@ class BlogInBox {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_post_biab_modules', array( $this, 'save_modules' ) );
 		add_action( 'toplevel_page_biab-plugin', array( $this, 'wp_head' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'add_sensehat_libs' ) );
 	}
 
 	public function admin_menu() {
@@ -61,6 +62,12 @@ class BlogInBox {
 
 	public function wp_head() {
 		wp_enqueue_style( 'bloginbox', plugin_dir_url( BIAB_FILE ).'plugin.css' );
+	}
+
+	public function add_sensehat_libs() {
+		// this lib is used to create the weather reports
+		wp_enqueue_script( 'bloginbox-d3', plugin_dir_url( BIAB_FILE ).'sensehat/js/d3.v4.min.js', [], 'v4' );
+		wp_enqueue_script( 'bloginbox-sensehat-chart', plugin_dir_url( BIAB_FILE ).'sensehat/js/sensehat-report.js', ['bloginbox-d3'], '170220' );
 	}
 
 	public function save_modules() {

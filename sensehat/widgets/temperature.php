@@ -28,8 +28,7 @@ class SenseHat_Temperature_Widget extends WP_Widget {
 		}
 		$request = new WP_REST_Request( 'GET', '/biab/v1/sensehat' );
 		$response = rest_do_request( $request );
-		$temperature = $response->get_data()->temperature;
-
+		$temperature = count( $response->get_data() ) > 0 ? $response->get_data()[0]->temperature : null;
 		echo '<div>';
 		echo '<span>🌡</span>';
 		echo esc_html( $this->get_temperature( $temperature ) );

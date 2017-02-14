@@ -28,10 +28,10 @@ class SenseHat_Humidity_Widget extends WP_Widget {
 		}
 		$request = new WP_REST_Request( 'GET', '/biab/v1/sensehat' );
 		$response = rest_do_request( $request );
-		$humidity = $response->get_data()->humidity;
+		$humidity = count( $response->get_data() ) > 0 ? $response->get_data()[0]->humidity : null;
 		echo '<div>';
 		echo '<span>💦</span>';
-		echo $this->get_humidity( $humidity );
+		echo esc_html( $this->get_humidity( $humidity ) );
 		echo '</div>';
 		echo $args['after_widget'];
 	}

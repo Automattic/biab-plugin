@@ -22,7 +22,14 @@ class BiabSensehat {
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 			add_action( 'blog-in-a-box_page_biab-plugin-sensehat', array( $this, 'wp_head' ) );
 			add_action( 'admin_post_biab_sensehat_options', array( $this, 'set_options' ) );
+			add_shortcode( 'sensehat', array( $this, 'sensehat_reading' ) );
 		}
+	}
+
+	public function sensehat_reading( $atts ) {
+		$svg_id = uniqid();
+		return '<svg id="'.$svg_id.'" width="480" height="250"></svg>
+			<script>SenseHatChart("http://empire.local/index.php/wp-json/biab/v1/sensehat?before='.$atts['before'].'&after='.$atts['after'].'", "'.$svg_id.'", "Temp (C)");</script>';
 	}
 
 	public function admin_menu() {
