@@ -22,7 +22,32 @@ class BiabSensehat {
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 			add_action( 'blog-in-a-box_page_biab-plugin-sensehat', array( $this, 'wp_head' ) );
 			add_action( 'admin_post_biab_sensehat_options', array( $this, 'set_options' ) );
+			add_action( 'admin_post_biab_publish_report', array( $this, 'publish_report' ) );
+			add_shortcode( 'sensehat', array( $this, 'sensehat_reading' ) );
 		}
+	}
+
+	public function publish_report( $atts ) {
+		if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'biab_sensehat-publish_report' ) ) {
+			$control = new SensehatControl();
+			$result = $control->publish_report();
+
+			if ( $result !== false ) {
+				echo json_encode( array(
+					'post_id' => $result,
+					'url' => get_post_permalink( $result ),
+					) );
+				return;
+			}
+
+			echo json_encode( array( 'error' => true ) );
+		}
+	}
+
+	public function sensehat_reading( $atts ) {
+		$svg_id = uniqid();
+		return '<svg id="'.$svg_id.'" width="480" height="250"></svg>
+			<script>SenseHatChart("http://empire.local/index.php/wp-json/biab/v1/sensehat?before='.$atts['before'].'&after='.$atts['after'].'", "'.$svg_id.'", "Temp (C)");</script>';
 	}
 
 	public function admin_menu() {
@@ -31,6 +56,7 @@ class BiabSensehat {
 
 	public function wp_head() {
 		wp_enqueue_style( 'bloginbox', plugin_dir_url( BIAB_FILE ).'plugin.css' );
+		wp_enqueue_script( 'biab-sensehat', plugin_dir_url( __FILE__ ).'js/sensehat.js', 'jquery' );
 	}
 
 	public static function plugin_activated() {
@@ -88,6 +114,14 @@ class BiabSensehat {
 			</div>
 
 			<p><?php _e( 'With an attached <a target="_blank" href="https://www.raspberrypi.org/products/sense-hat/">Sense HAT add-on board</a> you can measure the temperature, humidity, and air pressure to show their values as widgets in your site.', 'bloginbox' ); ?></p>
+
+			<h3><?php _e( 'Manual Temperature Report', 'bloginbox' ); ?></h3>
+			<p><?php _e( 'Publish a temperature report with last week values by clicking this button.', 'bloginbox' ); ?></p>
+			<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
+				<input type="hidden" name="action" value="biab_publish_report" />
+				<?php wp_nonce_field( 'biab_sensehat-publish_report' ); ?>
+				<a href="#" title="<?php echo esc_attr( __( 'Publish a report' ) ); ?>" id="publish-report" class="button">Publish report</a>
+			</form>
 
 			<h3><?php _e( 'Scheduled Reading', 'bloginbox' ); ?></h3>
 			<p><?php _e( 'Take a reading on a schedule by setting a period between each reading.', 'bloginbox' ); ?>:</p>

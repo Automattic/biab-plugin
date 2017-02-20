@@ -28,7 +28,7 @@ class SenseHat_AirPressure_Widget extends WP_Widget {
 		}
 		$request = new WP_REST_Request( 'GET', '/biab/v1/sensehat' );
 		$response = rest_do_request( $request );
-		$air_pressure = $response->get_data()->air_pressure;
+		$air_pressure = count( $response->get_data() ) > 0 ? $response->get_data()[0]->air_pressure : null;
 		echo '<div>';
 		echo '<span>💨</span>';
 		echo esc_html( $this->get_pressure( $air_pressure ) );

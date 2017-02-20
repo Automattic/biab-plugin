@@ -6,4 +6,19 @@ class SensehatControl extends BiabControl {
 
 		return $this->has_no_error( $this->request( 'sensehat-settings', $str ) );
 	}
+
+	public function publish_report( ){
+		$result = $this->request( 'sensehat-report' );
+
+		if ( $result['retval'] === 0 ) {
+			$json = json_decode( $result['output'][0] );
+
+			if ( !isset( $json->error ) ) {
+				return intval( $json->id, 10 );
+			}
+		}
+
+		return false;
+	}
+
 }
