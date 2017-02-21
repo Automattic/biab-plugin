@@ -10,6 +10,9 @@ class BiabSenseHAT_REST {
 		register_rest_route( 'biab/v1', '/sensehat', array(
 			'methods' => 'POST',
 			'callback' => array( 'BiabSensehat_REST', 'insert_reading' ),
+			'permission_callback' => function() {
+				return current_user_can( 'edit_others_posts' );
+			},
 		) );
 	}
 
