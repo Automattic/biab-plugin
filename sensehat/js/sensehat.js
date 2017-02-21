@@ -6,17 +6,18 @@
 			data: data,
 			dataType: 'json',
 			success: function( result ) {
-				$( '#publish-report' ).removeClass( "updating-message" );
+				var button = $( '#publish-report' );
+				button.removeClass( "updating-message" );
 				if ( result.error ) {
-					console.error('err on success');
+					button.parent().append('<p id="report-published">Report could not be published: ' + result.error );
 				} else {
-					$( '#publish-report' ).parent().append('<p id="report-published">Report has been <a href="' + result.url + '" target="_blank">published</a></p>');
-					console.log( result.post_id + ' ' + result.url );
+					button.parent().append('<p id="report-published">Report has been <a href="' + result.url + '" target="_blank">published</a></p>');
 				}
 			},
 			error: function( result ) {
-				$( '#publish-report' ).removeClass( "updating-message" );
-				console.error('err on err');
+				var button = $( '#publish-report' );
+				button.removeClass( "updating-message" );
+				button.parent().append('<p id="report-published">Report could not be published: ' + result );
 			}
 		} );
 	}
