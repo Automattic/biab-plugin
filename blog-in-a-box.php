@@ -54,6 +54,7 @@ class BlogInBox {
 		add_action( 'admin_post_biab_modules', array( $this, 'save_modules' ) );
 		add_action( 'toplevel_page_biab-plugin', array( $this, 'wp_head' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'add_sensehat_libs' ) );
+		add_action( 'customize_preview_init', array( $this, 'add_sensehat_libs') );
 	}
 
 	public function admin_menu() {
