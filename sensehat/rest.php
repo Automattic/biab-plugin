@@ -2,12 +2,15 @@
 
 class BiabSenseHAT_REST {
 
+	const API_NAMESPACE = 'biab/v1';
+	const API_ROUTE = '/sensehat';
+
 	public static function register_sensehat_routes( ) {
-		register_rest_route( 'biab/v1', '/sensehat', array(
+		register_rest_route( self::API_NAMESPACE, self::API_ROUTE, array(
 			'methods' => 'GET',
 			'callback' => array( 'BiabSensehat_REST', 'get_reading' ),
 		) );
-		register_rest_route( 'biab/v1', '/sensehat', array(
+		register_rest_route( self::API_NAMESPACE, self::API_ROUTE, array(
 			'methods' => 'POST',
 			'callback' => array( 'BiabSensehat_REST', 'insert_reading' ),
 			'permission_callback' => function() {

@@ -23,7 +23,7 @@ class BiabSensehat {
 			add_action( 'blog-in-a-box_page_biab-plugin-sensehat', array( $this, 'wp_head' ) );
 			add_action( 'admin_post_biab_sensehat_options', array( $this, 'set_options' ) );
 			add_action( 'admin_post_biab_publish_report', array( $this, 'publish_report' ) );
-			add_shortcode( 'sensehat', array( $this, 'sensehat_reading' ) );
+			add_shortcode( 'sensehat', array( $this, 'sensehat_shortcode_to_graph' ) );
 		}
 	}
 
@@ -44,10 +44,11 @@ class BiabSensehat {
 		}
 	}
 
-	public function sensehat_reading( $atts ) {
+	public function sensehat_shortcode_to_graph( $atts ) {
 		$svg_id = uniqid();
+		$api_route = rest_url().BiabSenseHAT_REST::API_NAMESPACE.BiabSenseHAT_REST::API_ROUTE."?before=".$atts['before']."&after=".$atts['after'];
 		return '<svg id="'.$svg_id.'" width="480" height="250"></svg>
-			<script>SenseHatChart("http://empire.local/index.php/wp-json/biab/v1/sensehat?before='.$atts['before'].'&after='.$atts['after'].'", "'.$svg_id.'", "Temp (C)");</script>';
+			<script>SenseHatChart("'.$api_route.'", "'.$svg_id.'", "Temp (C)");</script>';
 	}
 
 	public function admin_menu() {
