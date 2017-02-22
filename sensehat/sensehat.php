@@ -46,9 +46,14 @@ class BiabSensehat {
 
 	public function sensehat_shortcode_to_graph( $atts ) {
 		$svg_id = uniqid();
-		$api_route = rest_url().BiabSenseHAT_REST::API_NAMESPACE.BiabSenseHAT_REST::API_ROUTE."?before=".$atts['before']."&after=".$atts['after'];
+		$settings = new SensehatSettings();
+		$units = $settings->get_units();
+		$temperature = $units ? $units : 'celsius';
+		$label = 'Temperature (°'.strtoupper($temperature[0]).')';
+		$api_route = rest_url().BiabSenseHAT_REST::API_NAMESPACE.BiabSenseHAT_REST::API_ROUTE."?before=".$atts['before']."&after=".$atts['after']."&temperature=".$temperature;
+		$settings = $control = new SensehatSettings();
 		return '<svg id="'.$svg_id.'" width="480" height="250"></svg>
-			<script>SenseHatChart("'.$api_route.'", "'.$svg_id.'", "Temp (C)");</script>';
+			<script>SenseHatChart("'.$api_route.'", "'.$svg_id.'", "'.$label.'");</script>';
 	}
 
 	public function admin_menu() {
