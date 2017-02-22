@@ -46,9 +46,14 @@ class BiabSensehat {
 
 	public function sensehat_shortcode_to_graph( $atts ) {
 		$svg_id = uniqid();
-		$api_route = rest_url().BiabSenseHAT_REST::API_NAMESPACE.BiabSenseHAT_REST::API_ROUTE."?before=".$atts['before']."&after=".$atts['after'];
+		$settings = new SensehatSettings();
+		$units = $settings->get_units();
+		$temperature = $units ? $units : 'celsius';
+		$label = 'Temperature (°'.strtoupper($temperature[0]).')';
+		$api_route = rest_url().BiabSenseHAT_REST::API_NAMESPACE.BiabSenseHAT_REST::API_ROUTE."?before=".$atts['before']."&after=".$atts['after']."&temperature=".$temperature;
+		$settings = $control = new SensehatSettings();
 		return '<svg id="'.$svg_id.'" width="480" height="250"></svg>
-			<script>SenseHatChart("'.$api_route.'", "'.$svg_id.'", "Temp (C)");</script>';
+			<script>SenseHatChart("'.$api_route.'", "'.$svg_id.'", "'.$label.'");</script>';
 	}
 
 	public function admin_menu() {
@@ -116,6 +121,48 @@ class BiabSensehat {
 
 			<p><?php _e( 'With an attached <a target="_blank" href="https://www.raspberrypi.org/products/sense-hat/">Sense HAT add-on board</a> you can measure the temperature, humidity, and air pressure to show their values as widgets in your site.', 'bloginbox' ); ?></p>
 
+			<h3><?php _e( 'Settings', 'bloginbox' ); ?></h3>
+
+			<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
+				<table class="form-table">
+					<tr>
+						<th><?php _e( 'Reading frequency', 'bloginbox' ); ?></th>
+						<td
+						<p>
+							<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $settings->get_interval() ); ?>"/>
+							<select name="period">
+								<?php foreach ( $settings->get_periods() as $key => $name ) : ?>
+									<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $settings->get_period(), $key ) ?>><?php echo esc_html( $name ); ?></option>
+								<?php endforeach; ?>
+							</select>
+						</p>
+						</td>
+					</tr>
+					<tr>
+						<th><?php _e( 'Display', 'bloginbox' ); ?></th>
+						<td>
+							<p><label><input type="checkbox" name="display" <?php checked( $settings->get_display() ); ?>/> <?php _e( 'enable it for readings and camera activity', 'bloginbox' ); ?></label></p>
+						</td>
+					</tr>
+					<tr>
+						<th><?php _e( 'Units', 'bloginbox' ); ?></th>
+						<td>
+							<p>
+								<label><input <?php checked( $settings->get_units() === 'celsius' ) ?> type="radio" name="units" value="celsius"/> <?php _e( 'Celsius', 'bloginbox' ); ?></label>
+								<label><input <?php checked( $settings->get_units() === 'fahrenheit' ) ?> type="radio" name="units" value="fahrenheit"/> <?php _e( 'Fahrenheit', 'bloginbox' ); ?></label>
+							</p>
+						</td>
+					</tr>
+				</table>
+
+
+
+				<?php submit_button(); ?>
+
+				<input type="hidden" name="action" value="biab_sensehat_options" />
+				<?php wp_nonce_field( 'biab_sensehat-options' ); ?>
+			</form>
+
 			<h3><?php _e( 'Manual Temperature Report', 'bloginbox' ); ?></h3>
 			<p><?php _e( 'Publish a temperature report with last week values by clicking this button.', 'bloginbox' ); ?></p>
 			<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
@@ -124,31 +171,11 @@ class BiabSensehat {
 				<a href="#" title="<?php echo esc_attr( __( 'Publish a report' ) ); ?>" id="publish-report" class="button">Publish report</a>
 			</form>
 
-			<h3><?php _e( 'Scheduled Reading', 'bloginbox' ); ?></h3>
-			<p><?php _e( 'Take a reading on a schedule by setting a period between each reading.', 'bloginbox' ); ?>:</p>
+			<p>You can also use the shortcode <code>sensehat</code> in your posts and pages to show any period of time.
+			<p><?php _e( 'For example:', 'bloginbox' ); ?></p>
+			<p><code><?php _e('[sensehat before="2016-01-02" after="2016-02-02"]')?></code></p>
 
-			<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
-				<p>
-					<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $settings->get_interval() ); ?>"/>
-					<select name="period">
-						<?php foreach ( $settings->get_periods() as $key => $name ) : ?>
-							<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $settings->get_period(), $key ) ?>><?php echo esc_html( $name ); ?></option>
-						<?php endforeach; ?>
-					</select>
-				</p>
 
-				<p><label><input type="checkbox" name="display" <?php checked( $settings->get_display() ); ?>/> <?php _e( 'enable display for readings and camera activity', 'bloginbox' ); ?></label></p>
-				<p>
-					<?php _e( 'Units', 'bloginbox' ); ?>:
-					<label><input <?php checked( $settings->get_units() === 'celsius' ) ?> type="radio" name="units" value="celsius"/> <?php _e( 'Celsius', 'bloginbox' ); ?></label>
-					<label><input <?php checked( $settings->get_units() === 'fahrenheit' ) ?> type="radio" name="units" value="fahrenheit"/> <?php _e( 'Fahrenheit', 'bloginbox' ); ?></label>
-				</p>
-
-				<?php submit_button(); ?>
-
-				<input type="hidden" name="action" value="biab_sensehat_options" />
-				<?php wp_nonce_field( 'biab_sensehat-options' ); ?>
-			</form>
 		</div>
 		<?php
 	}

@@ -26,7 +26,10 @@ class SenseHat_Temperature_Widget extends WP_Widget {
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
 		}
+		$settings = new SensehatSettings();
+		$units = $settings->get_units();
 		$request = new WP_REST_Request( 'GET', '/biab/v1/sensehat' );
+		$request->set_param( 'temperature', $units ? $units : 'celsius' );
 		$response = rest_do_request( $request );
 		$temperature = count( $response->get_data() ) > 0 ? $response->get_data()[0]->temperature : null;
 		echo '<div>';
@@ -41,10 +44,6 @@ class SenseHat_Temperature_Widget extends WP_Widget {
 		$units = $settings->get_units() === 'celsius' ? 'C' : 'F';
 
 		if ( $temp ) {
-			if ( $units === 'F' ) {
-				$temp = $temp * ( 9 / 5 ) + 32;
-			}
-
 			return round( $temp, 1 ). ' °' . $units;
 		}
 

@@ -20,9 +20,13 @@ class BiabSenseHAT_REST {
 	}
 
 	public static function get_reading( WP_REST_Request $request ) {
+		$temperature = 'temperature';
+		if( isset( $request[ 'temperature' ]) && ($request[ 'temperature' ] == 'fahrenheit' ) ) {
+			$temperature = 'temperature * (9/5) + 32';
+		}
 		if( isset( $request[ 'before' ] ) && isset( $request[ 'after' ] ) ) {
 			$sql_query = "
-			SELECT temperature AS temperature,
+			SELECT ".$temperature." AS temperature,
 				humidity AS humidity,
 				air_pressure AS air_pressure,
 				created_at AS timestamp
@@ -32,7 +36,7 @@ class BiabSenseHAT_REST {
 			";
 		} else {
 			$sql_query = "
-			SELECT temperature AS temperature,
+			SELECT ".$temperature." AS temperature,
 				humidity AS humidity,
 				air_pressure AS air_pressure,
 				created_at AS timestamp
