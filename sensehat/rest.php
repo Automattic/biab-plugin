@@ -90,32 +90,63 @@ class BiabSenseHAT_REST {
 	}
 
 	public static function get_reading( WP_REST_Request $request ) {
+		global $wpdb;
+		$sql_query = '';
+
 		$temperature = 'temperature';
 		if( isset( $request[ 'temperature' ]) && ($request[ 'temperature' ] == 'fahrenheit' ) ) {
 			$temperature = 'temperature * (9/5) + 32';
 		}
+
 		if( isset( $request[ 'before' ] ) && isset( $request[ 'after' ] ) ) {
-			$sql_query = "
-			SELECT ".$temperature." AS temperature,
+			$sql_query = $wpdb->prepare(
+				"
+				SELECT ".$temperature." AS temperature,
+					humidity AS humidity,
+					air_pressure AS air_pressure,
+					created_at AS timestamp
+				FROM wp_sense_hat
+				WHERE date(created_at) >= %s AND date(created_at) <= %s ;
+				",
+				$request['after'],
+				$request['before']
+			);
+		} else if ( isset( $request[ 'before' ] ) ) {
+			$sql_query = $wpdb->prepare(
+				"
+				SELECT ".$temperature." AS temperature,
 				humidity AS humidity,
 				air_pressure AS air_pressure,
 				created_at AS timestamp
-			FROM wp_sense_hat
-			WHERE date(created_at) >= '".$request['after']."'
-				AND date(created_at) <= '".$request['before']."'
-			";
+				FROM wp_sense_hat
+				WHERE date(created_at) <= %s ;
+				",
+				$request['before']
+			);
+		} else if ( isset( $request[ 'after' ] ) ) {
+			$sql_query = $wpdb->prepare(
+				"
+				SELECT ".$temperature." AS temperature,
+				humidity AS humidity,
+				air_pressure AS air_pressure,
+				created_at AS timestamp
+				FROM wp_sense_hat
+				WHERE date(created_at) >= %s ;
+				",
+				$request['after']
+			);
 		} else {
 			$sql_query = "
-			SELECT ".$temperature." AS temperature,
+				SELECT ".$temperature." AS temperature,
 				humidity AS humidity,
 				air_pressure AS air_pressure,
 				created_at AS timestamp
-			FROM wp_sense_hat
-			ORDER BY id DESC LIMIT 1;
+				FROM wp_sense_hat
+				ORDER BY id DESC LIMIT 1;
 			";
 		}
 
-		global $wpdb;
+
 		$values = $wpdb->get_results( $sql_query );
 		return $values ? $values : [];
 
