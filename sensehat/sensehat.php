@@ -86,9 +86,10 @@ class BiabSensehat {
 			$settings->set_period( $_POST['period'] );
 			$settings->set_display( isset( $_POST['display'] ) );
 			$settings->set_units( $_POST['units'] );
+			$settings->set_report( $_POST['report'] );
 
 			$control = new SensehatControl();
-			if ( $control->set_options( $settings->get_interval(), $settings->get_period(), $settings->get_display(), $settings->get_units() ) ) {
+			if ( $control->set_options( $settings->get_interval(), $settings->get_period(), $settings->get_display(), $settings->get_units(), $settings->get_report() ) ) {
 				wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin-sensehat&msg=saved' ) );
 			} else {
 				wp_safe_redirect( admin_url( 'admin.php?page=biab-plugin-sensehat&msg=savefail' ) );
@@ -127,7 +128,7 @@ class BiabSensehat {
 				<table class="form-table">
 					<tr>
 						<th><?php _e( 'Reading frequency', 'bloginbox' ); ?></th>
-						<td
+						<td>
 						<p>
 							<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $settings->get_interval() ); ?>"/>
 							<select name="period">
@@ -136,6 +137,18 @@ class BiabSensehat {
 								<?php endforeach; ?>
 							</select>
 						</p>
+						</td>
+					</tr>
+					<tr>
+						<th><?php _e( 'Temperature report', 'bloginbox' ); ?></th>
+						<td>
+							<p>
+								<?php _e( 'Schedule: ', 'bloginbox' ); ?>
+								<label><input <?php checked( $settings->get_report() === 'never' ) ?> type="radio" name="report" value="never"/> <?php _e( 'Never', 'bloginbox' ); ?></label>
+								<label><input <?php checked( $settings->get_report() === 'daily' ) ?> type="radio" name="report" value="daily"/> <?php _e( 'Daily', 'bloginbox' ); ?></label>
+								<label><input <?php checked( $settings->get_report() === 'weekly' ) ?> type="radio" name="report" value="weekly"/> <?php _e( 'Weekly', 'bloginbox' ); ?></label>
+								<label><input <?php checked( $settings->get_report() === 'monthly' ) ?> type="radio" name="report" value="monthly"/> <?php _e( 'Monthly', 'bloginbox' ); ?></label>
+							</p>
 						</td>
 					</tr>
 					<tr>

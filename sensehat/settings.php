@@ -4,6 +4,7 @@ class SensehatSettings {
 	const OPTION_INTERVAL = 'biab_sensehat_interval';
 	const OPTION_PERIOD = 'biab_sensehat_period';
 	const OPTION_UNITS = 'biab_sensehat_units';
+	const OPTION_REPORT = 'biab_sensehat_report';
 	const OPTION_DISPLAY = 'biab_sensehat_display';
 
 	public function set_interval( $interval ) {
@@ -23,6 +24,12 @@ class SensehatSettings {
 	public function set_units( $units ) {
 		if ( $units === 'celsius' || $units === 'fahrenheit' ) {
 			update_option( self::OPTION_UNITS, $units );
+		}
+	}
+
+	public function set_report( $report ) {
+		if ( $report === 'never' || $report === 'daily' || $report === 'weekly' || $report === 'monthly') {
+			update_option( self::OPTION_REPORT, $report );
 		}
 	}
 
@@ -51,6 +58,15 @@ class SensehatSettings {
 		}
 
 		return 'celsius';
+	}
+
+	public function get_report() {
+		$report = get_option( self::OPTION_REPORT );
+		if ( $report ) {
+			return $report;
+		}
+
+		return 'never';
 	}
 
 	public function get_periods() {
