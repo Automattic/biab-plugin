@@ -51,11 +51,11 @@ class BiabSensehat {
 		$temperature = $units ? $units : 'celsius';
 		$label = 'Temperature (°'.strtoupper( $temperature[0] ).')';
 
-		$api_route = add_query_var( array(
+		$api_route = rest_url() . BiabSenseHAT_REST::API_NAMESPACE . BiabSenseHAT_REST::API_ROUTE.'?'.build_query( array(
 			'before' => $atts['before'],
 			'after' => $atts['after'],
 			'temperature' => $temperature,
-		), rest_url() . BiabSenseHAT_REST::API_NAMESPACE . BiabSenseHAT_REST::API_ROUTE );
+		) );
 
 		return '<svg id="'.esc_attr( $svg_id ).'" width="480" height="250"></svg>
 			<script>SenseHatChart("'.esc_url( $api_route ).'", "'.esc_attr( $svg_id ).'", "'.esc_attr( $label ).'");</script>';
