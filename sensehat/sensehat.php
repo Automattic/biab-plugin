@@ -49,11 +49,16 @@ class BiabSensehat {
 		$settings = new SensehatSettings();
 		$units = $settings->get_units();
 		$temperature = $units ? $units : 'celsius';
-		$label = 'Temperature (°'.strtoupper($temperature[0]).')';
-		$api_route = rest_url().BiabSenseHAT_REST::API_NAMESPACE.BiabSenseHAT_REST::API_ROUTE."?before=".$atts['before']."&after=".$atts['after']."&temperature=".$temperature;
-		$settings = $control = new SensehatSettings();
-		return '<svg id="'.$svg_id.'" width="480" height="250"></svg>
-			<script>SenseHatChart("'.$api_route.'", "'.$svg_id.'", "'.$label.'");</script>';
+		$label = 'Temperature (°'.strtoupper( $temperature[0] ).')';
+
+		$api_route = add_query_var( array(
+			'before' => $atts['before'],
+			'after' => $atts['after'],
+			'temperature' => $temperature,
+		), rest_url() . BiabSenseHAT_REST::API_NAMESPACE . BiabSenseHAT_REST::API_ROUTE );
+
+		return '<svg id="'.esc_attr( $svg_id ).'" width="480" height="250"></svg>
+			<script>SenseHatChart("'.esc_url( $api_route ).'", "'.esc_attr( $svg_id ).'", "'.esc_attr( $label ).'");</script>';
 	}
 
 	public function admin_menu() {
@@ -181,10 +186,10 @@ class BiabSensehat {
 			<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
 				<input type="hidden" name="action" value="biab_publish_report" />
 				<?php wp_nonce_field( 'biab_sensehat-publish_report' ); ?>
-				<a href="#" title="<?php echo esc_attr( __( 'Publish a report' ) ); ?>" id="publish-report" class="button">Publish report</a>
+				<a href="#" title="<?php echo esc_attr( __( 'Publish a report' ) ); ?>" id="publish-report" class="button"><?php _e( 'Publish report', 'bloginbox' ); ?></a>
 			</form>
 
-			<p>You can also use the shortcode <code>sensehat</code> in your posts and pages to show any period of time.
+			<p><?php _e( 'You can also use the shortcode <code>sensehat</code> in your posts and pages to show any period of time.', 'bloginbox' ); ?>
 			<p><?php _e( 'For example:', 'bloginbox' ); ?></p>
 			<p><code><?php _e('[sensehat before="2016-01-02" after="2016-02-02"]')?></code></p>
 
