@@ -157,10 +157,12 @@ class BiabCamera {
 		<input type="hidden" name="action" value="biab_take_photo" />
 		<?php wp_nonce_field( 'biab_camera-takephoto' ); ?>
 
-		<a href="#TB_inline?width=600&amp;height=500&amp;inlineId=camera-lens" title="<?php echo esc_attr( __( 'Taking a photo' ) ); ?>" id="take-photo" class="button">Take Photo</a>
+		<a href="#TB_inline?width=600&amp;height=500&amp;inlineId=camera-lens" title="<?php echo esc_attr( __( 'Taking a photo' ) ); ?>" id="take-photo" class="button">
+			<?php _e( 'Take Photo', 'bloginbox' ); ?>
+		</a>
 
 		<div id="camera-loading" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
-		<div id="camera-failed" style="display:none;"><?php _e( 'Failed to take a picture', 'bloginabox' ); ?></div>
+		<div id="camera-failed" style="display:none;"><?php _e( 'Failed to take a picture', 'bloginbox' ); ?></div>
 		<div id="camera-lens" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
 	</form>
 
@@ -217,23 +219,23 @@ class BiabCamera {
 			</tr>
 			<tr>
 				<th><?php _e( 'Quality', 'bloginbox' ); ?></th>
-				<td><input type="number" name="quality" min="0" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'quality' ) ); ?>"/> 0 to 100</td>
+				<td><input type="number" name="quality" min="0" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'quality' ) ); ?>"/> <?php _e( '0 to 100' ); ?></td>
 			</tr>
 			<tr>
 				<th><?php _e( 'Brightness', 'bloginbox' ); ?></th>
-				<td><input type="number" name="brightness" min="0" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'brightness' ) ); ?>"/> 0 to 100</td>
+				<td><input type="number" name="brightness" min="0" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'brightness' ) ); ?>"/> <?php _e( '0 to 100' ); ?></td>
 			</tr>
 			<tr>
 				<th><?php _e( 'Saturation', 'bloginbox' ); ?></th>
-				<td><input type="number" name="saturation" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'saturation' ) ); ?>"/> -100 to 100</td>
+				<td><input type="number" name="saturation" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'saturation' ) ); ?>"/> <?php _e( '-100 to 100' ); ?></td>
 			</tr>
 			<tr>
 				<th><?php _e( 'Sharpness', 'bloginbox' ); ?></th>
-				<td><input type="number" name="sharpness" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'sharpness' ) ); ?>"/> -100 to 100</td>
+				<td><input type="number" name="sharpness" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'sharpness' ) ); ?>"/> <?php _e( '-100 to 100' ); ?></td>
 			</tr>
 			<tr>
 				<th><?php _e( 'Contrast', 'bloginbox' ); ?></th>
-				<td><input type="number" name="contrast" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'contrast' ) ); ?>"/> -100 to 100</td>
+				<td><input type="number" name="contrast" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'contrast' ) ); ?>"/> <?php _e( '-100 to 100' ); ?></td>
 			</tr>
 			<tr>
 				<th><?php _e( 'ISO', 'bloginbox' ); ?></th>
