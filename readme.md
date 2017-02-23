@@ -14,11 +14,11 @@ Note: this is done automatically when using [Blog In A Box Installer](https://gi
 
 Once installed the plugin appears as a menu in the WordPress admin interface:
 
-XXX
+![Admin menu](screenshot-1.png)
 
 The main admin page allows individual device modules to be enable or disabled:
 
-XXX
+![Modules](screenshot-2.png)
 
 The plugin control path should point to the [Blog In A Box CLI](https://github.com/tinkertinker/biab-cli) tools.
 
