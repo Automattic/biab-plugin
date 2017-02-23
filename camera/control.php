@@ -24,12 +24,14 @@ class CameraControl extends BiabControl {
 	}
 
 	public function save_settings( $settings ) {
+		$validate = new CameraSettings();
+
 		$cmd = array(
-			'-q '.$settings['quality'],
-			'--sharpness '.$settings['sharpness'],
-			'--contrast '.$settings['contrast'],
-			'--brightness '.$settings['brightness'],
-			'--saturation '.$settings['saturation'],
+			'-q '.intval( $settings['quality'], 10 ),
+			'--sharpness '.intval( $settings['sharpness'], 10 ),
+			'--contrast '.intval( $settings['contrast'], 10 ),
+			'--brightness '.intval( $settings['brightness'], 10 ),
+			'--saturation '.intval( $settings['saturation'], 10 ),
 		);
 
 		if ( $settings['vflip'] ) {
@@ -40,16 +42,16 @@ class CameraControl extends BiabControl {
 			$cmd[] = '-hf';
 		}
 
-		if ( $settings['ifx'] ) {
+		if ( $settings['ifx'] && isset( $validate->get_effect_values()[ $settings['ifx'] ] ) ) {
 			$cmd[] = '--imxfx '.$settings['ifx'];
 		}
 
-		if ( $settings['awb'] !== 'auto' ) {
+		if ( $settings['awb'] !== 'auto' && isset( $validate->get_awb_values()[ $settings['awb'] ] ) ) {
 			$cmd[] = '--awb '.$settings['awb'];
 		}
 
 		if ( $settings['iso'] !== 100 ) {
-			$cmd[] = '--iso '.$settings['iso'];
+			$cmd[] = '--iso '.intval( $settings['iso'], 10 );
 		}
 
 		return $this->has_no_error( $this->request( 'camera-settings', implode( ' ', $cmd ) ) );
