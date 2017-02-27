@@ -14,8 +14,3 @@
 	display: block;
 }
 
-.camera-snapshot img {
-	position: absolute;
-	right: 40px;
-	width: 400px;
-}

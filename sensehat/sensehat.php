@@ -127,72 +127,74 @@ class BiabSensehat {
 
 			<p><?php _e( 'With an attached <a target="_blank" href="https://www.raspberrypi.org/products/sense-hat/">Sense HAT add-on board</a> you can measure the temperature, humidity, and air pressure to show their values as widgets in your site.', 'bloginbox' ); ?></p>
 
-			<h3><?php _e( 'Settings', 'bloginbox' ); ?></h3>
+			<div class="card">
+				<h3><?php _e( 'Settings', 'bloginbox' ); ?></h3>
 
-			<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
-				<table class="form-table">
-					<tr>
-						<th><?php _e( 'Reading frequency', 'bloginbox' ); ?></th>
-						<td>
-						<p>
-							<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $settings->get_interval() ); ?>"/>
-							<select name="period">
-								<?php foreach ( $settings->get_periods() as $key => $name ) : ?>
-									<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $settings->get_period(), $key ) ?>><?php echo esc_html( $name ); ?></option>
-								<?php endforeach; ?>
-							</select>
-						</p>
-						</td>
-					</tr>
-					<tr>
-						<th><?php _e( 'Temperature report', 'bloginbox' ); ?></th>
-						<td>
+				<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
+					<table class="form-table">
+						<tr>
+							<th><?php _e( 'Reading frequency', 'bloginbox' ); ?></th>
+							<td>
 							<p>
-								<?php _e( 'Schedule: ', 'bloginbox' ); ?>
-								<label><input <?php checked( $settings->get_report() === 'never' ) ?> type="radio" name="report" value="never"/> <?php _e( 'Never', 'bloginbox' ); ?></label>
-								<label><input <?php checked( $settings->get_report() === 'daily' ) ?> type="radio" name="report" value="daily"/> <?php _e( 'Daily', 'bloginbox' ); ?></label>
-								<label><input <?php checked( $settings->get_report() === 'weekly' ) ?> type="radio" name="report" value="weekly"/> <?php _e( 'Weekly', 'bloginbox' ); ?></label>
-								<label><input <?php checked( $settings->get_report() === 'monthly' ) ?> type="radio" name="report" value="monthly"/> <?php _e( 'Monthly', 'bloginbox' ); ?></label>
+								<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $settings->get_interval() ); ?>"/>
+								<select name="period">
+									<?php foreach ( $settings->get_periods() as $key => $name ) : ?>
+										<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $settings->get_period(), $key ) ?>><?php echo esc_html( $name ); ?></option>
+									<?php endforeach; ?>
+								</select>
 							</p>
-						</td>
-					</tr>
-					<tr>
-						<th><?php _e( 'Display', 'bloginbox' ); ?></th>
-						<td>
-							<p><label><input type="checkbox" name="display" <?php checked( $settings->get_display() ); ?>/> <?php _e( 'enable it for readings and camera activity', 'bloginbox' ); ?></label></p>
-						</td>
-					</tr>
-					<tr>
-						<th><?php _e( 'Units', 'bloginbox' ); ?></th>
-						<td>
-							<p>
-								<label><input <?php checked( $settings->get_units() === 'celsius' ) ?> type="radio" name="units" value="celsius"/> <?php _e( 'Celsius', 'bloginbox' ); ?></label>
-								<label><input <?php checked( $settings->get_units() === 'fahrenheit' ) ?> type="radio" name="units" value="fahrenheit"/> <?php _e( 'Fahrenheit', 'bloginbox' ); ?></label>
-							</p>
-						</td>
-					</tr>
-				</table>
+							</td>
+						</tr>
+						<tr>
+							<th><?php _e( 'Temperature report', 'bloginbox' ); ?></th>
+							<td>
+								<p>
+									<label><input <?php checked( $settings->get_report() === 'never' ) ?> type="radio" name="report" value="never"/> <?php _e( 'Never', 'bloginbox' ); ?></label>
+									<label><input <?php checked( $settings->get_report() === 'daily' ) ?> type="radio" name="report" value="daily"/> <?php _e( 'Daily', 'bloginbox' ); ?></label>
+									<label><input <?php checked( $settings->get_report() === 'weekly' ) ?> type="radio" name="report" value="weekly"/> <?php _e( 'Weekly', 'bloginbox' ); ?></label>
+									<label><input <?php checked( $settings->get_report() === 'monthly' ) ?> type="radio" name="report" value="monthly"/> <?php _e( 'Monthly', 'bloginbox' ); ?></label>
+								</p>
+							</td>
+						</tr>
+						<tr>
+							<th><?php _e( 'Display', 'bloginbox' ); ?></th>
+							<td>
+								<p><label><input type="checkbox" name="display" <?php checked( $settings->get_display() ); ?>/> <?php _e( 'use display for readings and camera', 'bloginbox' ); ?></label></p>
+							</td>
+						</tr>
+						<tr>
+							<th><?php _e( 'Units', 'bloginbox' ); ?></th>
+							<td>
+								<p>
+									<label><input <?php checked( $settings->get_units() === 'celsius' ) ?> type="radio" name="units" value="celsius"/> <?php _e( 'Celsius', 'bloginbox' ); ?></label>
+									<label><input <?php checked( $settings->get_units() === 'fahrenheit' ) ?> type="radio" name="units" value="fahrenheit"/> <?php _e( 'Fahrenheit', 'bloginbox' ); ?></label>
+								</p>
+							</td>
+						</tr>
+					</table>
 
 
 
-				<?php submit_button(); ?>
+					<?php submit_button(); ?>
 
-				<input type="hidden" name="action" value="biab_sensehat_options" />
-				<?php wp_nonce_field( 'biab_sensehat-options' ); ?>
-			</form>
+					<input type="hidden" name="action" value="biab_sensehat_options" />
+					<?php wp_nonce_field( 'biab_sensehat-options' ); ?>
+				</form>
+			</div>
 
-			<h3><?php _e( 'Manual Temperature Report', 'bloginbox' ); ?></h3>
-			<p><?php _e( 'Publish a temperature report with last week values by clicking this button.', 'bloginbox' ); ?></p>
-			<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
-				<input type="hidden" name="action" value="biab_publish_report" />
-				<?php wp_nonce_field( 'biab_sensehat-publish_report' ); ?>
-				<a href="#" title="<?php echo esc_attr( __( 'Publish a report' ) ); ?>" id="publish-report" class="button"><?php _e( 'Publish report', 'bloginbox' ); ?></a>
-			</form>
+			<div class="card">
+				<h3><?php _e( 'Manual Temperature Report', 'bloginbox' ); ?></h3>
+				<p><?php _e( 'Publish a temperature report with last week values by clicking this button.', 'bloginbox' ); ?></p>
+				<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
+					<input type="hidden" name="action" value="biab_publish_report" />
+					<?php wp_nonce_field( 'biab_sensehat-publish_report' ); ?>
+					<a href="#" title="<?php echo esc_attr( __( 'Publish a report' ) ); ?>" id="publish-report" class="button"><?php _e( 'Publish report', 'bloginbox' ); ?></a>
+				</form>
 
-			<p><?php _e( 'You can also use the shortcode <code>sensehat</code> in your posts and pages to show any period of time.', 'bloginbox' ); ?>
-			<p><?php _e( 'For example:', 'bloginbox' ); ?></p>
-			<p><code><?php _e('[sensehat before="2016-01-02" after="2016-02-02"]')?></code></p>
-
+				<p><?php _e( 'You can also use the shortcode <code>sensehat</code> in your posts and pages to show any period of time.', 'bloginbox' ); ?>
+				<p><?php _e( 'For example:', 'bloginbox' ); ?></p>
+				<p><code><?php _e('[sensehat before="2016-01-02" after="2016-02-02"]')?></code></p>
+			</div>
 
 		</div>
 		<?php

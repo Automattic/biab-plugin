@@ -148,47 +148,53 @@ class BiabCamera {
 
 		add_thickbox();
 ?>
-	<h2 class="subsubsubheader"><?php _e( 'Camera Control', 'bloginbox' ); ?></h2>
-	<p><?php _e( 'With an attached <a target="_blank" href="https://www.raspberrypi.org/products/camera-module/">camera module</a> you can take a photo and have it automatically added to a new blog post.', 'bloginbox' ); ?></p>
+	<div class="card">
+		<h2 class="subsubsubheader"><?php _e( 'Camera Control', 'bloginbox' ); ?></h2>
+		<p><?php _e( 'With an attached <a target="_blank" href="https://www.raspberrypi.org/products/camera-module/">camera module</a> you can take a photo and have it automatically added to a new blog post.', 'bloginbox' ); ?></p>
+	
+		<h3><?php _e( 'Manual Photo', 'bloginbox' ); ?></h3>
+		<p><?php _e( 'Take a photo right now by clicking this button.', 'bloginbox' ); ?></p>
+		<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
+			<input type="hidden" name="action" value="biab_take_photo" />
+			<?php wp_nonce_field( 'biab_camera-takephoto' ); ?>
+	
+			<p><a href="#TB_inline?width=600&amp;height=500&amp;inlineId=camera-lens" title="<?php echo esc_attr( __( 'Taking a photo' ) ); ?>" id="take-photo" class="button">
+				<?php _e( 'Take Photo', 'bloginbox' ); ?>
+			</a></p>
+	
+			<div id="camera-loading" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
+			<div id="camera-failed" style="display:none;"><?php _e( 'Failed to take a picture', 'bloginbox' ); ?></div>
+			<div id="camera-lens" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
+		</form>
+	</div>
 
-	<h3><?php _e( 'Manual Photo', 'bloginbox' ); ?></h3>
-	<p><?php _e( 'Take a photo right now by clicking this button.', 'bloginbox' ); ?></p>
-	<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
-		<input type="hidden" name="action" value="biab_take_photo" />
-		<?php wp_nonce_field( 'biab_camera-takephoto' ); ?>
+	<div class="card">
+		<h3><?php _e( 'Scheduled Photo', 'bloginbox' ); ?></h3>
+		<p><?php _e( 'Take a photo on a schedule by setting a period between each photo.', 'bloginbox' ); ?>:</p>
+	
+		<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
+			<p>
+				<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $cron->get_interval() ); ?>"/>
+				<select name="period">
+					<?php foreach ( $cron->get_periods() as $key => $name ) : ?>
+						<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $cron->get_period(), $key ) ?>><?php echo esc_html( $name ); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</p>
+	
+			<?php submit_button( false, 'button-secondary' ); ?>
+	
+			<input type="hidden" name="action" value="biab_camera_schedule" />
+			<?php wp_nonce_field( 'biab_camera-schedule' ); ?>
+		</form>
+	</div>
 
-		<a href="#TB_inline?width=600&amp;height=500&amp;inlineId=camera-lens" title="<?php echo esc_attr( __( 'Taking a photo' ) ); ?>" id="take-photo" class="button">
-			<?php _e( 'Take Photo', 'bloginbox' ); ?>
-		</a>
-
-		<div id="camera-loading" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
-		<div id="camera-failed" style="display:none;"><?php _e( 'Failed to take a picture', 'bloginbox' ); ?></div>
-		<div id="camera-lens" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
-	</form>
-
-	<h3><?php _e( 'Scheduled Photo', 'bloginbox' ); ?></h3>
-	<p><?php _e( 'Take a photo on a schedule by setting a period between each photo.', 'bloginbox' ); ?>:</p>
-
-	<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
-		<p>
-			<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $cron->get_interval() ); ?>"/>
-			<select name="period">
-				<?php foreach ( $cron->get_periods() as $key => $name ) : ?>
-					<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $cron->get_period(), $key ) ?>><?php echo esc_html( $name ); ?></option>
-				<?php endforeach; ?>
-			</select>
-		</p>
-
-		<?php submit_button( false, 'small' ); ?>
-
-		<input type="hidden" name="action" value="biab_camera_schedule" />
-		<?php wp_nonce_field( 'biab_camera-schedule' ); ?>
-	</form>
-
-	<h3><?php _e( 'Externally Triggered Photo', 'bloginbox' ); ?></h3>
-	<p><?php printf( __( 'Trigger a photo externally by hooking your trigger to the command <code>%s</code>.', 'bloginbox' ), BiabControl::COMMAND ); ?></p>
-	<p><?php _e( 'For example:', 'bloginbox' ); ?></p>
-	<p><code><?php echo esc_html( $control->get_path().'/'.BiabControl::COMMAND ) ?> camera-take-photo [<?php _e( 'title', 'bloginbox' ); ?>]</code></p>
+	<div class="card">
+		<h3><?php _e( 'Externally Triggered Photo', 'bloginbox' ); ?></h3>
+		<p><?php printf( __( 'Trigger a photo externally by hooking your trigger to the command <code>%s</code>.', 'bloginbox' ), BiabControl::COMMAND ); ?></p>
+		<p><?php _e( 'For example:', 'bloginbox' ); ?></p>
+		<p><code><?php echo esc_html( $control->get_path().'/'.BiabControl::COMMAND ) ?> camera-take-photo [<?php _e( 'title', 'bloginbox' ); ?>]</code></p>
+	</div>
 <?php
 	}
 
@@ -201,11 +207,14 @@ class BiabCamera {
 			$control->take_snapshot();
 		}
 ?>
+
 	<h2 class="subsubsubheader"><?php _e( 'Camera Settings', 'bloginbox' ); ?></h2>
 
 	<p><?php _e( 'These settings affect the image taken by the camera. Changing a value will update the image preview.', 'bloginbox' ); ?></p>
 
-	<div class="camera-snapshot"><img src="/wp-content/uploads/snapshot.jpg"/></div>
+	<div class="camera-snapshot">
+		<img src="/wp-content/uploads/snapshot.jpg" width="400" height="300" alt="" />
+	</div>
 
 	<form method="POST" action="<?php echo admin_url( 'admin-post.php' ); ?>">
 		<table class="form-table">
