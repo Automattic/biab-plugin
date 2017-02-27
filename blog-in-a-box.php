@@ -141,9 +141,9 @@ class BlogInBox {
 			<?php endforeach; ?>
 		</ul>
 
-		<h4><?php _e( 'Plugin Setup', 'bloginbox' ); ?></h4>
-		<?php _e( 'Plugin control path', 'bloginbox' ); ?> <input type="text" name="path" value="<?php echo esc_attr( $control->get_path() ); ?>"/> <?php _e( "The full path to the plugin's control companion", 'bloginbox' ); ?>
-
+		<h4><?php _e( 'Plugin Control Path', 'bloginbox' ); ?></h4>
+		<p><input id="biab_path" class="regular-text code" type="text" name="path" value="<?php echo esc_attr( $control->get_path() ); ?>"/></p>
+		<p class="description"><?php _e( "The full path to the plugin's control companion", 'bloginbox' ); ?></p>
  		<input type="hidden" name="action" value="biab_modules" />
 		<?php wp_nonce_field( 'biab_modules-save' ); ?>
 		<?php submit_button(); ?>

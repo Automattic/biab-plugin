@@ -148,47 +148,52 @@ class BiabCamera {
 
 		add_thickbox();
 ?>
-	<h2 class="subsubsubheader"><?php _e( 'Camera Control', 'bloginbox' ); ?></h2>
-	<p><?php _e( 'With an attached <a target="_blank" href="https://www.raspberrypi.org/products/camera-module/">camera module</a> you can take a photo and have it automatically added to a new blog post.', 'bloginbox' ); ?></p>
+	<div class="card">
+		<h2 class="subsubsubheader"><?php _e( 'Camera Control', 'bloginbox' ); ?></h2>
+		<p><?php _e( 'With an attached <a target="_blank" href="https://www.raspberrypi.org/products/camera-module/">camera module</a> you can take a photo and have it automatically added to a new blog post.', 'bloginbox' ); ?></p>
+	
+		<h3><?php _e( 'Manual Photo', 'bloginbox' ); ?></h3>
+		<p><?php _e( 'Take a photo right now by clicking this button.', 'bloginbox' ); ?></p>
+		<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
+			<input type="hidden" name="action" value="biab_take_photo" />
+			<?php wp_nonce_field( 'biab_camera-takephoto' ); ?>
+	
+			<p><a href="#TB_inline?width=600&amp;height=500&amp;inlineId=camera-lens" title="<?php echo esc_attr( __( 'Taking a photo' ) ); ?>" id="take-photo" class="button">
+				<?php _e( 'Take Photo', 'bloginbox' ); ?>
+			</a></p>
+	
+			<div id="camera-loading" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
+			<div id="camera-failed" style="display:none;"><?php _e( 'Failed to take a picture', 'bloginbox' ); ?></div>
+			<div id="camera-lens" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
+		</form>
+	</div>
 
-	<h3><?php _e( 'Manual Photo', 'bloginbox' ); ?></h3>
-	<p><?php _e( 'Take a photo right now by clicking this button.', 'bloginbox' ); ?></p>
-	<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
-		<input type="hidden" name="action" value="biab_take_photo" />
-		<?php wp_nonce_field( 'biab_camera-takephoto' ); ?>
+	<div class="card">
+		<h3><?php _e( 'Scheduled Photo', 'bloginbox' ); ?></h3>
+		<p><?php _e( 'Take a photo on a schedule by setting a period between each photo.', 'bloginbox' ); ?>:</p>
+	
+		<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
+			<p>
+				<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $cron->get_interval() ); ?>"/>
+				<select name="period">
+					<?php foreach ( $cron->get_periods() as $key => $name ) : ?>
+						<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $cron->get_period(), $key ) ?>><?php echo esc_html( $name ); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</p>
+	
+			<?php submit_button( false, 'button-secondary' ); ?>
+	
+			<input type="hidden" name="action" value="biab_camera_schedule" />
+			<?php wp_nonce_field( 'biab_camera-schedule' ); ?>
+		</form>
+		</div>
 
-		<a href="#TB_inline?width=600&amp;height=500&amp;inlineId=camera-lens" title="<?php echo esc_attr( __( 'Taking a photo' ) ); ?>" id="take-photo" class="button">
-			<?php _e( 'Take Photo', 'bloginbox' ); ?>
-		</a>
-
-		<div id="camera-loading" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
-		<div id="camera-failed" style="display:none;"><?php _e( 'Failed to take a picture', 'bloginbox' ); ?></div>
-		<div id="camera-lens" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
-	</form>
-
-	<h3><?php _e( 'Scheduled Photo', 'bloginbox' ); ?></h3>
-	<p><?php _e( 'Take a photo on a schedule by setting a period between each photo.', 'bloginbox' ); ?>:</p>
-
-	<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
-		<p>
-			<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $cron->get_interval() ); ?>"/>
-			<select name="period">
-				<?php foreach ( $cron->get_periods() as $key => $name ) : ?>
-					<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $cron->get_period(), $key ) ?>><?php echo esc_html( $name ); ?></option>
-				<?php endforeach; ?>
-			</select>
-		</p>
-
-		<?php submit_button( false, 'small' ); ?>
-
-		<input type="hidden" name="action" value="biab_camera_schedule" />
-		<?php wp_nonce_field( 'biab_camera-schedule' ); ?>
-	</form>
-
-	<h3><?php _e( 'Externally Triggered Photo', 'bloginbox' ); ?></h3>
-	<p><?php printf( __( 'Trigger a photo externally by hooking your trigger to the command <code>%s</code>.', 'bloginbox' ), BiabControl::COMMAND ); ?></p>
-	<p><?php _e( 'For example:', 'bloginbox' ); ?></p>
-	<p><code><?php echo esc_html( $control->get_path().'/'.BiabControl::COMMAND ) ?> camera-take-photo [<?php _e( 'title', 'bloginbox' ); ?>]</code></p>
+	<div class="card">
+		<h3><?php _e( 'Externally Triggered Photo', 'bloginbox' ); ?></h3>
+		<p><?php printf( __( 'Trigger a photo externally by hooking your trigger to the command <code>%s</code>.', 'bloginbox' ), BiabControl::COMMAND ); ?></p>
+		<p><?php _e( 'For example:', 'bloginbox' ); ?></p>
+		<p><code><?php echo esc_html( $control->get_path().'/'.BiabControl::COMMAND ) ?> camera-take-photo [<?php _e( 'title', 'bloginbox' ); ?>]</code></p>
 <?php
 	}
 
@@ -201,84 +206,88 @@ class BiabCamera {
 			$control->take_snapshot();
 		}
 ?>
-	<h2 class="subsubsubheader"><?php _e( 'Camera Settings', 'bloginbox' ); ?></h2>
+	</div>
 
-	<p><?php _e( 'These settings affect the image taken by the camera. Changing a value will update the image preview.', 'bloginbox' ); ?></p>
-
-	<div class="camera-snapshot"><img src="/wp-content/uploads/snapshot.jpg"/></div>
-
-	<form method="POST" action="<?php echo admin_url( 'admin-post.php' ); ?>">
-		<table class="form-table">
-			<tr>
-				<th><?php _e( 'Vertical flip', 'bloginbox' ); ?></th>
-				<td><input type="checkbox" name="vertical" <?php checked( $settings->is_enabled( 'vflip' ) ); ?>/></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Horizontal flip', 'bloginbox' ); ?></th>
-				<td><input type="checkbox" name="horizontal" <?php checked( $settings->is_enabled( 'hflip' ) ); ?>/></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Quality', 'bloginbox' ); ?></th>
-				<td><input type="number" name="quality" min="0" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'quality' ) ); ?>"/> <?php _e( '0 to 100' ); ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Brightness', 'bloginbox' ); ?></th>
-				<td><input type="number" name="brightness" min="0" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'brightness' ) ); ?>"/> <?php _e( '0 to 100' ); ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Saturation', 'bloginbox' ); ?></th>
-				<td><input type="number" name="saturation" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'saturation' ) ); ?>"/> <?php _e( '-100 to 100' ); ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Sharpness', 'bloginbox' ); ?></th>
-				<td><input type="number" name="sharpness" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'sharpness' ) ); ?>"/> <?php _e( '-100 to 100' ); ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Contrast', 'bloginbox' ); ?></th>
-				<td><input type="number" name="contrast" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'contrast' ) ); ?>"/> <?php _e( '-100 to 100' ); ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'ISO', 'bloginbox' ); ?></th>
-				<td>
-					<select name="iso">
-						<?php foreach ( $settings->get_iso_values() as $iso ) : ?>
-							<option <?php selected( $settings->get_value( 'iso' ), $iso ); ?> value="<?php echo esc_attr( $iso ); ?>">
-								<?php echo esc_html( $iso ); ?>
-							</option>
-						<?php endforeach; ?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<th><?php _e( 'White Balance', 'bloginbox' ); ?></th>
-				<td>
-					<select name="awb">
-						<?php foreach ( $settings->get_awb_values() as $awb_key => $awb_name ) : ?>
-							<option <?php selected( $settings->get_value( 'awb' ), $awb_key ); ?> value="<?php echo esc_attr( $awb_key ); ?>">
-								<?php echo esc_html( $awb_name ); ?>
-							</option>
-						<?php endforeach; ?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Effect', 'bloginbox' ); ?></th>
-				<td>
-					<select name="effect">
-						<?php foreach ( $settings->get_effect_values() as $name => $title ) : ?>
-							<option <?php selected( $settings->get_value( 'ifx' ), $name ); ?> value="<?php echo esc_attr( $name ); ?>">
-								<?php echo esc_html( $title ); ?>
-							</option>
-						<?php endforeach; ?>
-					</select>
-				</td>
-			</tr>
-		</table>
-
-		<input type="hidden" name="action" value="biab_camera_settings" />
-		<?php wp_nonce_field( 'biab_camera-settings' ); ?>
-		<?php submit_button(); ?>
-	</form>
+	<div class="card">
+		<h2 class="subsubsubheader"><?php _e( 'Camera Settings', 'bloginbox' ); ?></h2>
+	
+		<p><?php _e( 'These settings affect the image taken by the camera. Changing a value will update the image preview.', 'bloginbox' ); ?></p>
+	
+		<div class="camera-snapshot"><img src="/wp-content/uploads/snapshot.jpg"/></div>
+	
+		<form method="POST" action="<?php echo admin_url( 'admin-post.php' ); ?>">
+			<table class="form-table">
+				<tr>
+					<th><?php _e( 'Vertical flip', 'bloginbox' ); ?></th>
+					<td><input type="checkbox" name="vertical" <?php checked( $settings->is_enabled( 'vflip' ) ); ?>/></td>
+				</tr>
+				<tr>
+					<th><?php _e( 'Horizontal flip', 'bloginbox' ); ?></th>
+					<td><input type="checkbox" name="horizontal" <?php checked( $settings->is_enabled( 'hflip' ) ); ?>/></td>
+				</tr>
+				<tr>
+					<th><?php _e( 'Quality', 'bloginbox' ); ?></th>
+					<td><input type="number" name="quality" min="0" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'quality' ) ); ?>"/> <?php _e( '0 to 100' ); ?></td>
+				</tr>
+				<tr>
+					<th><?php _e( 'Brightness', 'bloginbox' ); ?></th>
+					<td><input type="number" name="brightness" min="0" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'brightness' ) ); ?>"/> <?php _e( '0 to 100' ); ?></td>
+				</tr>
+				<tr>
+					<th><?php _e( 'Saturation', 'bloginbox' ); ?></th>
+					<td><input type="number" name="saturation" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'saturation' ) ); ?>"/> <?php _e( '-100 to 100' ); ?></td>
+				</tr>
+				<tr>
+					<th><?php _e( 'Sharpness', 'bloginbox' ); ?></th>
+					<td><input type="number" name="sharpness" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'sharpness' ) ); ?>"/> <?php _e( '-100 to 100' ); ?></td>
+				</tr>
+				<tr>
+					<th><?php _e( 'Contrast', 'bloginbox' ); ?></th>
+					<td><input type="number" name="contrast" min="-100" max="100" step="1" value="<?php echo esc_attr( $settings->get_value( 'contrast' ) ); ?>"/> <?php _e( '-100 to 100' ); ?></td>
+				</tr>
+				<tr>
+					<th><?php _e( 'ISO', 'bloginbox' ); ?></th>
+					<td>
+						<select name="iso">
+							<?php foreach ( $settings->get_iso_values() as $iso ) : ?>
+								<option <?php selected( $settings->get_value( 'iso' ), $iso ); ?> value="<?php echo esc_attr( $iso ); ?>">
+									<?php echo esc_html( $iso ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th><?php _e( 'White Balance', 'bloginbox' ); ?></th>
+					<td>
+						<select name="awb">
+							<?php foreach ( $settings->get_awb_values() as $awb_key => $awb_name ) : ?>
+								<option <?php selected( $settings->get_value( 'awb' ), $awb_key ); ?> value="<?php echo esc_attr( $awb_key ); ?>">
+									<?php echo esc_html( $awb_name ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th><?php _e( 'Effect', 'bloginbox' ); ?></th>
+					<td>
+						<select name="effect">
+							<?php foreach ( $settings->get_effect_values() as $name => $title ) : ?>
+								<option <?php selected( $settings->get_value( 'ifx' ), $name ); ?> value="<?php echo esc_attr( $name ); ?>">
+									<?php echo esc_html( $title ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</td>
+				</tr>
+			</table>
+	
+			<input type="hidden" name="action" value="biab_camera_settings" />
+			<?php wp_nonce_field( 'biab_camera-settings' ); ?>
+			<?php submit_button(); ?>
+		</form>
+		</div>
 <?php
 	}
 }
