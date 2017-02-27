@@ -58,7 +58,7 @@ class BlogInBox {
 	}
 
 	public function admin_menu() {
-		add_menu_page( __( 'Blog in a Box', 'bloginbox' ), __( 'Blog In A Box', 'bloginbox' ), 'manage_options', 'biab-plugin', array( $this, 'show_page' ), 'dashicons-archive' );
+		add_menu_page( __( 'Blog in a Box', 'bloginbox' ), __( 'Blog In A Box', 'bloginbox' ), 'manage_options', 'biab-plugin', array( $this, 'show_page' ), 'data:image/svg+xml;base64,'. base64_encode( file_get_contents( dirname( __FILE__ ) . '/dashicon.svg' ) ) );
 	}
 
 	public function wp_head() {
