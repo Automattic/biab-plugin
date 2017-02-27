@@ -2,13 +2,13 @@
 
 A custom WordPress plugin for Blog In A Box.
 
-Provides an admin interface to the [Blog In A Box device handler tool](https://github.com/tinkertinker/biab-cli), as well as widgets for SenseHAT readings.
+Provides an admin interface to the [Blog In A Box device handler tool](https://github.com/Automattic/biab-cli), as well as widgets for SenseHAT readings.
 
 ## Installation
 
 The plugin is installed as a standard WordPress plugin by copying to `wp-content/plugins`.
 
-Note: this is done automatically when using [Blog In A Box Installer](https://github.com/tinkertinker/biab-installer).
+Note: this is done automatically when using [Blog In A Box Installer](https://github.com/Automattic/biab-installer).
 
 ## Usage
 
@@ -20,7 +20,7 @@ The main admin page allows individual device modules to be enable or disabled:
 
 ![Modules](screenshot-2.png)
 
-The plugin control path should point to the [Blog In A Box CLI](https://github.com/tinkertinker/biab-cli) tools.
+The plugin control path should point to the [Blog In A Box CLI](https://github.com/Automattic/biab-cli) tools.
 
 ## Camera Module
 
@@ -63,7 +63,7 @@ Change the temperature units between Celsius and Fahrenheit.
 
 ## Developing
 
-The plugin is designed to be extended with additional devices, and should match changes in the [CLI tool](https://github.com/tinkertinker/biab-cli).
+The plugin is designed to be extended with additional devices, and should match changes in the [CLI tool](https://github.com/Automattic/biab-cli).
 
 Each device module is effectively a WordPress plugin in its own right, and has full access to all WordPress plugin hooks.
 
