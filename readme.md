@@ -1,6 +1,6 @@
 # Blog In A Box WordPress Plugin
 
-A custom WordPress plugin for Blog In A Box.
+A custom WordPress plugin for [Blog In A Box](https://inabox.blog/).
 
 Provides an admin interface to the [Blog In A Box device handler tool](https://github.com/Automattic/biab-cli), as well as widgets for SenseHAT readings.
 
