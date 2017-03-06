@@ -151,17 +151,17 @@ class BiabCamera {
 	<div class="card">
 		<h2 class="subsubsubheader"><?php _e( 'Camera Control', 'bloginbox' ); ?></h2>
 		<p><?php _e( 'With an attached <a target="_blank" href="https://www.raspberrypi.org/products/camera-module/">camera module</a> you can take a photo and have it automatically added to a new blog post.', 'bloginbox' ); ?></p>
-	
+
 		<h3><?php _e( 'Manual Photo', 'bloginbox' ); ?></h3>
 		<p><?php _e( 'Take a photo right now by clicking this button.', 'bloginbox' ); ?></p>
 		<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
 			<input type="hidden" name="action" value="biab_take_photo" />
 			<?php wp_nonce_field( 'biab_camera-takephoto' ); ?>
-	
+
 			<p><a href="#TB_inline?width=600&amp;height=500&amp;inlineId=camera-lens" title="<?php echo esc_attr( __( 'Taking a photo' ) ); ?>" id="take-photo" class="button">
 				<?php _e( 'Take Photo', 'bloginbox' ); ?>
 			</a></p>
-	
+
 			<div id="camera-loading" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
 			<div id="camera-failed" style="display:none;"><?php _e( 'Failed to take a picture', 'bloginbox' ); ?></div>
 			<div id="camera-lens" style="display:none;"><img src="/wp-includes/images/wpspin.gif"/></div>
@@ -171,19 +171,19 @@ class BiabCamera {
 	<div class="card">
 		<h3><?php _e( 'Scheduled Photo', 'bloginbox' ); ?></h3>
 		<p><?php _e( 'Take a photo on a schedule by setting a period between each photo.', 'bloginbox' ); ?>:</p>
-	
+
 		<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
 			<p>
-				<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $cron->get_interval() ); ?>"/>
+				<input type="number" name="interval" min="0" style="width: 50px" value="<?php echo esc_attr( $cron->get_interval() ); ?>"/>
 				<select name="period">
 					<?php foreach ( $cron->get_periods() as $key => $name ) : ?>
 						<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $cron->get_period(), $key ) ?>><?php echo esc_html( $name ); ?></option>
 					<?php endforeach; ?>
 				</select>
 			</p>
-	
+
 			<?php submit_button( false, 'button-secondary' ); ?>
-	
+
 			<input type="hidden" name="action" value="biab_camera_schedule" />
 			<?php wp_nonce_field( 'biab_camera-schedule' ); ?>
 		</form>

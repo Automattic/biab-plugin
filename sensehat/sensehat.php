@@ -136,7 +136,7 @@ class BiabSensehat {
 							<th><?php _e( 'Reading frequency', 'bloginbox' ); ?></th>
 							<td>
 							<p>
-								<input type="number" name="interval" style="width: 50px" value="<?php echo esc_attr( $settings->get_interval() ); ?>"/>
+								<input type="number" name="interval" min="0" style="width: 50px" value="<?php echo esc_attr( $settings->get_interval() ); ?>"/>
 								<select name="period">
 									<?php foreach ( $settings->get_periods() as $key => $name ) : ?>
 										<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $settings->get_period(), $key ) ?>><?php echo esc_html( $name ); ?></option>

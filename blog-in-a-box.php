@@ -1,13 +1,13 @@
 <?php
 /*
 Plugin Name: Blog In A Box
-Plugin URI: https://github.com/Automattic/blog-in-a-box/
+Plugin URI: https://github.com/Automattic/biab-plugin/
 Description: Connect Raspberry Pi devices to WordPress
 Author: Automattic
 Author URI: https://automattic.com
 Text domain: bloginbox
 Domain path: /locale
-Version: 0.1
+Version: 0.2
 */
 
 define( 'BIAB_FILE', __FILE__ );
