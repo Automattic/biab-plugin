@@ -58,7 +58,7 @@ class BiabSensehat {
 		) );
 
 		return '<svg id="'.esc_attr( $svg_id ).'" width="480" height="250"></svg>
-			<script>SenseHatChart("'.esc_url( $api_route ).'", "'.esc_attr( $svg_id ).'", "'.esc_attr( $label ).'");</script>';
+			<script>SenseHatChart("'.esc_url_raw( $api_route ).'", "'.esc_attr( $svg_id ).'", "'.esc_attr( $label ).'");</script>';
 	}
 
 	public function admin_menu() {
